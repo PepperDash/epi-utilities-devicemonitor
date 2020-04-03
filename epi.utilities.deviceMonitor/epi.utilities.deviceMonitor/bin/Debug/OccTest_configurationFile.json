@@ -1,0 +1,1149 @@
+{
+    "system": {},
+    "system_url": "http://portal-QA.devcloud.pepperdash.com/templates/0f50640b-bc89-42d5-998f-81d137d3fc98#/template_summary",
+    "template": {
+        "devices": [
+            {
+                "key": "processor",
+                "uid": 0,
+                "type": "rmc3",
+                "name": "rmc3",
+                "group": "processor",
+                "supportedConfigModes": [
+                    "compliance",
+                    "essentials"
+                ],
+                "supportedSystemTypes": [
+                    "hudType",
+                    "presType",
+                    "vtcType",
+                    "custom"
+                ],
+                "supportsCompliance": true,
+                "properties": {}
+            },
+            {
+                "key": "StatusSign-1",
+                "name": "Status Sign 01",
+                "group": "api",
+                "type": "statussign",
+                "properties": {
+                    "control": {
+                        "cresnetId": "11"
+                    }
+                }
+            },
+            {
+                "key": "TempSense-1",
+                "name": "Temp Sensor 01",
+                "group": "api",
+                "type": "c2nrths",
+                "properties": {
+                    "control": {
+                        "cresnetId": "31"
+                    }
+                }
+            },
+            {
+                "key": "OccSense-1",
+                "uid": 5,
+                "type": "glsodtccn",
+                "group": "api",
+                "properties": {
+                    "control": {
+                        "cresnetId": "41"
+                    }
+                }
+            },
+            {
+                "key": "OccSense-2",
+                "uid": 5,
+                "type": "glsodtccn",
+                "group": "api",
+                "properties": {
+                    "control": {
+                        "cresnetId": "42"
+                    }
+                }
+            },
+            {
+                "key": "VTX-01",
+                "uid": 1,
+                "name": "PC 1 Out 1",
+                "type": "nvxdevice",
+                "group": "nvx",
+                "properties": {
+                    "control": {
+                        "ipid": "41",
+                        "method": "IpId"
+                    },
+                    "usbMode": "Local",
+                    "model": "DmNvx350C",
+                    "mode": "tx",
+                    "virtualDevice": 1,
+                    "multicastVideoAddress": "239.0.0.2",
+                    "multicastAudioAddress": "239.0.0.3"
+                }
+            },
+            {
+                "key": "VTX-02",
+                "uid": 1,
+                "name": "PC 1 Out 2",
+                "type": "nvxdevice",
+                "group": "nvx",
+                "properties": {
+                    "control": {
+                        "ipid": "42",
+                        "method": "IpId"
+                    },
+                    "usbMode": "Local",
+                    "model": "DmNvx350C",
+                    "mode": "tx",
+                    "virtualDevice": 2,
+                    "multicastVideoAddress": "239.0.0.4",
+                    "multicastAudioAddress": "239.0.0.5"
+                }
+            },
+            {
+                "key": "VTX-03",
+                "uid": 1,
+                "name": "PC 1 Out 3",
+                "type": "nvxdevice",
+                "group": "nvx",
+                "properties": {
+                    "control": {
+                        "ipid": "43",
+                        "method": "IpId"
+                    },
+                    "usbMode": "Local",
+                    "model": "DmNvx350C",
+                    "mode": "tx",
+                    "virtualDevice": 3,
+                    "multicastVideoAddress": "239.0.0.6",
+                    "multicastAudioAddress": "239.0.0.7"
+                }
+            },
+            {
+                "key": "VRX-01",
+                "uid": 14,
+                "name": "Open Seating SE",
+                "type": "nvxdevice",
+                "group": "nvx",
+                "properties": {
+                    "control": {
+                        "ipid": "91",
+                        "method": "IpId"
+                    },
+                    "usbMode": "Remote",
+                    "model": "DmNvx350",
+                    "mode": "rx",
+                    "virtualDevice": 1
+                }
+            },
+            {
+                "key": "VRX-02",
+                "uid": 14,
+                "name": "Open Seating S",
+                "type": "nvxdevice",
+                "group": "nvx",
+                "properties": {
+                    "control": {
+                        "ipid": "92",
+                        "method": "IpId"
+                    },
+                    "usbMode": "Remote",
+                    "model": "DmNvx350",
+                    "mode": "rx",
+                    "virtualDevice": 2
+                }
+            },
+            {
+                "key": "Display-1",
+                "uid": 1,
+                "name": "Open Seating SE",
+                "type": "samsungmdcplugin",
+                "group": "display",
+                "properties": {
+                    "id": "01",
+                    "control": {
+                        "method": "tcpIp",
+                        "tcpSshProperties": {
+                            "address": "192.168.1.1",
+                            "port": 1515,
+                            "username": "",
+                            "password": "",
+                            "autoReconnect": true,
+                            "autoReconnectIntervalMs": 10000
+                        }
+                    }
+                }
+            },
+            {
+                "key": "Display-2",
+                "uid": 1,
+                "name": "Open Seating S",
+                "type": "samsungmdcplugin",
+                "group": "display",
+                "properties": {
+                    "id": "01",
+                    "control": {
+                        "method": "tcpIp",
+                        "tcpSshProperties": {
+                            "address": "192.168.1.2",
+                            "port": 1515,
+                            "username": "",
+                            "password": "",
+                            "autoReconnect": true,
+                            "autoReconnectIntervalMs": 10000
+                        }
+                    }
+                }
+            },
+            
+            {
+                "key": "GroupManagement-1",
+                "name": "TestGroupManagement",
+                "type": "groupManager",
+                "group": "generic",
+                "properties": {
+                    "sources": [
+                        {
+                            "key": "Source000",
+                            "enabled": false,
+                            "name": "Clear",
+                            "icon": 0,
+                            "videoInput": 0,
+                            "audioInput": 0,
+                            "controlsType": 0,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "behavior": "somethingForEnum",
+                            "buttonID": 0,
+                            "drm": false,
+                            "shareableLocal": 0,
+                            "shareableFarEnd": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "showVideoSync": 0
+                        },
+                        {
+                            "key": "Source001",
+                            "enabled": true,
+                            "name": "PC 1 Out 1",
+                            "icon": 1,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 1,
+                            "audioInput": 1,
+                            "controlsType": 1,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 1,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 3,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 0,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source002",
+                            "enabled": true,
+                            "name": "PC 1 Out 2",
+                            "icon": 1,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 2,
+                            "audioInput": 2,
+                            "controlsType": 1,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 3,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 1,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source003",
+                            "enabled": true,
+                            "name": "PC 1 Out 3",
+                            "icon": 1,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 3,
+                            "audioInput": 3,
+                            "controlsType": 1,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 3,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source004",
+                            "enabled": true,
+                            "name": "PC 1 Out 4",
+                            "icon": 1,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 4,
+                            "audioInput": 4,
+                            "controlsType": 1,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 3,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source005",
+                            "enabled": true,
+                            "name": "Tuner 1",
+                            "icon": 1,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 0,
+                            "videoInput": 5,
+                            "audioInput": 5,
+                            "controlsType": 8,
+                            "deviceId": 50901,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 3,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source006",
+                            "enabled": true,
+                            "name": "Tuner 2",
+                            "icon": 0,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 0,
+                            "videoInput": 6,
+                            "audioInput": 6,
+                            "controlsType": 8,
+                            "deviceId": 50902,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 0,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source007",
+                            "enabled": true,
+                            "name": "Tuner 3",
+                            "icon": 0,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 0,
+                            "videoInput": 7,
+                            "audioInput": 7,
+                            "controlsType": 8,
+                            "deviceId": 50903,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source008",
+                            "enabled": true,
+                            "name": "Tuner 4",
+                            "icon": 0,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 0,
+                            "videoInput": 8,
+                            "audioInput": 8,
+                            "controlsType": 0,
+                            "deviceId": 50904,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source009",
+                            "enabled": true,
+                            "name": "Cisco Codec Monitor 1",
+                            "icon": 0,
+                            "shareableLocal": 0,
+                            "shareableFarEnd": 0,
+                            "videoInput": 9,
+                            "audioInput": 9,
+                            "controlsType": 0,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source011",
+                            "enabled": true,
+                            "name": "Cisco COdec Camera",
+                            "icon": 0,
+                            "shareableLocal": 0,
+                            "shareableFarEnd": 0,
+                            "videoInput": 11,
+                            "audioInput": 11,
+                            "controlsType": 0,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source012",
+                            "enabled": true,
+                            "name": "Airmedia 1",
+                            "icon": 0,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 12,
+                            "audioInput": 12,
+                            "controlsType": 0,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source013",
+                            "enabled": true,
+                            "name": "Airmedia 2",
+                            "icon": 0,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 13,
+                            "audioInput": 13,
+                            "controlsType": 0,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source017",
+                            "enabled": true,
+                            "name": "PC 2 Out 1",
+                            "icon": 0,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 17,
+                            "audioInput": 17,
+                            "controlsType": 0,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source018",
+                            "enabled": true,
+                            "name": "PC 2 Out 2",
+                            "icon": 0,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 18,
+                            "audioInput": 18,
+                            "controlsType": 0,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source019",
+                            "enabled": true,
+                            "name": "PC 2 Out 3",
+                            "icon": 0,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 19,
+                            "audioInput": 19,
+                            "controlsType": 0,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source020",
+                            "enabled": true,
+                            "name": "PC 2 Out 4",
+                            "icon": 0,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 20,
+                            "audioInput": 20,
+                            "controlsType": 0,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source033",
+                            "enabled": true,
+                            "name": "Dog Bone 1",
+                            "icon": 0,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 33,
+                            "audioInput": 33,
+                            "controlsType": 0,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source034",
+                            "enabled": true,
+                            "name": "Dog Bone 2",
+                            "icon": 0,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 34,
+                            "audioInput": 34,
+                            "controlsType": 0,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source065",
+                            "enabled": true,
+                            "name": "War Room Table",
+                            "icon": 0,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 65,
+                            "audioInput": 65,
+                            "controlsType": 0,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        },
+                        {
+                            "key": "Source066",
+                            "enabled": true,
+                            "name": "War Room Codec",
+                            "icon": 0,
+                            "shareableLocal": 1,
+                            "shareableFarEnd": 1,
+                            "videoInput": 66,
+                            "audioInput": 66,
+                            "controlsType": 0,
+                            "deviceId": 0,
+                            "helpMessage": "",
+                            "showVideoSync": 0,
+                            "destinationVideoRestrict": 0,
+                            "destinationAudioRestrict": 0,
+                            "destinationVconfCameraRestrict": 0,
+                            "destinationVconfContentRestrict": 0,
+                            "destinationInput": 1,
+                            "destinationAudioInput": 0,
+                            "destinationVconfCameraInput": 0,
+                            "destinationVconfContentInput": 0,
+                            "behavior": "somethingForEnum",
+                            "buttonID": 2,
+                            "drm": false
+                        }
+                    ],
+                    "destinations": [
+                        {
+                            "key": "Destination001",
+                            "enabled": true,
+                            "name": "Display 1",
+                            "technicianAccessible": true,
+                            "userAccessible": true,
+                            "avOutput": 1,
+                            "usageType": "Display",
+                            "defaultAvSource": "Source001",
+                            "defaultAcSource": "Source001",
+                            "defaultVcSource": "Source009",
+                            "deviceId": 50001
+                        },
+                        {
+                            "key": "Destination002",
+                            "enabled": true,
+                            "name": "Display 2",
+                            "technicianAccessible": true,
+                            "userAccessible": true,
+                            "avOutput": 2,
+                            "usageType": "Display",
+                            "defaultAvSource": "Source001",
+                            "defaultAcSource": "Source001",
+                            "defaultVcSource": "Source009",
+                            "deviceId": 50002
+                        },
+                        {
+                            "key": "Destination003",
+                            "enabled": true,
+                            "name": "Display 3",
+                            "technicianAccessible": true,
+                            "userAccessible": true,
+                            "avOutput": 3,
+                            "usageType": "Display",
+                            "defaultAvSource": "Source001",
+                            "defaultAcSource": "Source001",
+                            "defaultVcSource": "Source009",
+                            "deviceId": 50003
+                        },
+                        {
+                            "key": "Destination004",
+                            "enabled": true,
+                            "name": "Display 4",
+                            "technicianAccessible": true,
+                            "userAccessible": true,
+                            "avOutput": 4,
+                            "usageType": "Display",
+                            "defaultAvSource": "Source017",
+                            "defaultAcSource": "Source017",
+                            "defaultVcSource": "Source009",
+                            "deviceId": 50004
+                        },
+                        {
+                            "key": "Destination005",
+                            "enabled": true,
+                            "name": "Display 5",
+                            "technicianAccessible": true,
+                            "userAccessible": true,
+                            "avOutput": 5,
+                            "usageType": "Display",
+                            "defaultAvSource": "Source017",
+                            "defaultAcSource": "Source017",
+                            "defaultVcSource": "Source009",
+                            "deviceId": 50005
+                        },
+                        {
+                            "key": "Destination006",
+                            "enabled": true,
+                            "name": "Display 6",
+                            "technicianAccessible": true,
+                            "userAccessible": true,
+                            "avOutput": 6,
+                            "usageType": "Display",
+                            "defaultAvSource": "Source017",
+                            "defaultAcSource": "Source017",
+                            "defaultVcSource": "Source009",
+                            "deviceId": 50006
+                        },
+                        {
+                            "key": "Destination007",
+                            "enabled": true,
+                            "name": "Display 7",
+                            "technicianAccessible": true,
+                            "userAccessible": true,
+                            "avOutput": 7,
+                            "usageType": "Display",
+                            "defaultAvSource": "Source017",
+                            "defaultAcSource": "Source017",
+                            "defaultVcSource": "Source009",
+                            "deviceId": 50007
+                        },
+                        {
+                            "key": "Destination008",
+                            "enabled": true,
+                            "name": "Display 8",
+                            "technicianAccessible": true,
+                            "userAccessible": true,
+                            "avOutput": 8,
+                            "usageType": "Display",
+                            "defaultAvSource": "Source017",
+                            "defaultAcSource": "Source017",
+                            "defaultVcSource": "Source009",
+                            "deviceId": 50008
+                        },
+                        {
+                            "key": "Destination009",
+                            "enabled": true,
+                            "name": "Display 9",
+                            "technicianAccessible": true,
+                            "userAccessible": true,
+                            "avOutput": 9,
+                            "usageType": "Display",
+                            "defaultAvSource": "Source017",
+                            "defaultAcSource": "Source017",
+                            "defaultVcSource": "Source009",
+                            "deviceId": 50009
+                        },
+                        {
+                            "key": "Destination010",
+                            "enabled": true,
+                            "name": "Display 10",
+                            "technicianAccessible": true,
+                            "userAccessible": true,
+                            "avOutput": 10,
+                            "usageType": "Display",
+                            "defaultAvSource": "Source017",
+                            "defaultAcSource": "Source017",
+                            "defaultVcSource": "Source009",
+                            "deviceId": 50010
+                        },
+                        {
+                            "key": "Destination011",
+                            "enabled": true,
+                            "name": "Display 11",
+                            "technicianAccessible": true,
+                            "userAccessible": true,
+                            "avOutput": 11,
+                            "usageType": "Display",
+                            "defaultAvSource": "Source017",
+                            "defaultAcSource": "Source017",
+                            "defaultVcSource": "Source009",
+                            "deviceId": 50011
+                        },
+                        {
+                            "key": "Destination012",
+                            "enabled": true,
+                            "name": "Display 12",
+                            "technicianAccessible": true,
+                            "userAccessible": true,
+                            "avOutput": 12,
+                            "usageType": "Display",
+                            "defaultAvSource": "Source017",
+                            "defaultAcSource": "Source017",
+                            "defaultVcSource": "Source009",
+                            "deviceId": 50012
+                        },
+                        {
+                            "key": "Destination013",
+                            "enabled": true,
+                            "name": "Codec Content",
+                            "technicianAccessible": false,
+                            "userAccessible": false,
+                            "avOutput": 30,
+                            "usageType": "Content"
+                        },
+                        {
+                            "key": "Destination014",
+                            "enabled": true,
+                            "name": "Rack Monitor",
+                            "technicianAccessible": false,
+                            "userAccessible": false,
+                            "avOutput": 34,
+                            "usageType": "Monitor"
+                        },
+                        {
+                            "key": "AudioDest01",
+                            "enabled": true,
+                            "name": "Audio Destination",
+                            "technicianAccessible": false,
+                            "userAccessible": false,
+                            "avOutput": 34,
+                            "usageType": "Audio",
+                            "defaultAvSource": "Source001",
+                            "defaultAcSource": 9999
+                        }
+                    ],
+                    "sourceGroups": [
+                        {
+                            "key": "Sourcegroup001",
+                            "name": "Basic Group 01",
+                            "childKeys": [
+                                "Source000",
+                                "Source001",
+                                "Source002",
+                                "Source003",
+                                "Source004",
+                                "Source005",
+                                "Source006",
+                                "Source007",
+                                "Source008",
+                                "Source009",
+                                "Source011",
+                                "Source012",
+                                "Source013",
+                                "Source017",
+                                "Source018",
+                                "Source019",
+                                "Source020",
+                                "Source033",
+                                "Source034",
+                                "Source065",
+                                "Source066"
+                            ]
+                        }
+                    ],
+                    "destinationGroups": [
+                        {
+                            "key": "Destgroup001",
+                            "name": "Open Area",
+                            "childKeys": [
+                                "Destination001",
+                                "Destination002",
+                                "Destination003",
+                                "Destination004",
+                                "Destination005",
+                                "Destination006",
+                                "Destination007"
+                            ]
+                        },
+                        {
+                            "key": "Destgroup002",
+                            "name": "Offices",
+                            "childKeys": [
+                                "Destination008",
+                                "Destination009",
+                                "Destination010"
+                            ]
+                        },
+                        {
+                            "key": "Destgroup003",
+                            "name": "War Room",
+                            "childKeys": [
+                                "Destination011",
+                                "Destination012"
+                            ]
+                        }
+                    ],
+                    "zones": [
+                        {
+                            "key": "zone01",
+                            "name": "myCoolZone",
+                            "sourceGroupKeys": [
+                                "Sourcegroup001"
+                            ],
+                            "destinationGroupKeys": [
+                                "Destgroup001",
+                                "Destgroup002",
+                                "Destgroup003"
+                            ],
+                            "audioDestinationKey": "AudioDest01",
+                            "codecKeys": {
+                                "codecOutput001Key": "Source009",
+                                "codecOutput002Key": "",
+                                "cameraSourceKey": "Source011",
+                                "cameraDestinationKey": "",
+                                "contentInputKey": "Destination030"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "key": "OccZone-1",
+                "type": "occupancyZone",
+                "group" : "api",
+                "name": "SomeName",
+                "properties": {
+                    "occGroups": [
+                        {
+                            "groupKey": "OccGroup01",
+                            "groupName": "OccGroupName01",
+                            "occSensors": [
+                                "OccSense-1",
+                                "OccSense-2"
+                            ],
+                            "displays": [
+                                {
+                                    "displayKey": "Display-1",
+                                    "OutputKey": "VRX-01",
+                                    "defautInputKey": "VTX-01"
+                                },
+                                {
+                                    "displayKey": "Display-2",
+                                    "OutputKey": "VRX-02",
+                                    "defautInputKey": "VTX-01"
+                                }
+                            ],
+                            "dspData": {
+                                "dspKey": "Dsp-1",
+                                "faders": [
+                                    "Fader01",
+                                    "Fader02"
+                                ],
+                                "occupiedPreset": "",
+                                "vacantPreset": ""
+                            },
+                            "zoneType" : "Occ"
+                        }
+                    ]
+                },
+                "dspData": {
+                    "dspKey": "Dsp-1",
+                    "faders": [
+                        "Fader01",
+                        "Fader02"
+                    ],
+                    "occupiedPreset": "",
+                    "vacantPreset": ""
+                }
+            },
+            {
+                "key": "Dsp-1",
+                "name": "DSP-01",
+                "type": "tesiradsp",
+                "group": "api",
+                "properties": {
+                    "control": {
+                        "method": "SSH",
+                        "tcpSshProperties": {
+                            "address": "DSP-01.CSP-01.crestron",
+                            "port": "22",
+                            "username": "default",
+                            "password": "default",
+                            "autoReconnect": true,
+                            "autoReconnectIntervalMs": 5000
+                        }
+                    },
+                    "levelControlBlocks": {
+                        "Fader01": {
+                            "enabled": true,
+                            "isMic": false,
+                            "hasLevel": true,
+                            "hasMute": true,
+                            "index1": 1,
+                            "index2": 0,
+                            "label": "Zone A - 1",
+                            "levelInstanceTag": "VolZoneA",
+                            "muteInstanceTag": "VolZoneA",
+                            "unmuteOnVolChange": true,
+                            "incrementAmount": "2.0"
+                        },
+                        "Fader02": {
+                            "enabled": true,
+                            "isMic": false,
+                            "hasLevel": true,
+                            "hasMute": true,
+                            "index1": 2,
+                            "index2": 0,
+                            "label": "Zone A - 2",
+                            "levelInstanceTag": "VolZoneA",
+                            "muteInstanceTag": "VolZoneA",
+                            "unmuteOnVolChange": true,
+                            "incrementAmount": "2.0"
+                        }
+                    }
+                }
+            },
+            {
+                "key": "Primary-Bridge-1",
+                "uid": 4,
+                "name": "Primary Bridge 1",
+                "group": "api",
+                "type": "eiscApi",
+                "properties": {
+                    "control": {
+                        "tcpSshProperties": {
+                            "address": "CSP-01.CSP-01.crestron",
+                            "port": 0
+                        },
+                        "ipid": "21",
+                        "method": "ipidTcp"
+                    },
+                    "devices": [
+                        {
+                            "deviceKey" : "GroupManagement-1",
+                            "joinStart" : 1001
+                        },
+                        {
+                            "deviceKey" : "OccZone-1",
+                            "joinStart" : 2001
+                        },
+                        {
+                            "deviceKey": "StatusSign-1",
+                            "joinStart": 1801
+                        },
+                        {
+                            "deviceKey": "TempSense-1",
+                            "joinStart": 1701
+                        },
+                        {
+                            "deviceKey": "OccSense-1",
+                            "joinStart": 301
+                        },
+                        {
+                            "deviceKey": "OccSense-2",
+                            "joinStart": 331
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
