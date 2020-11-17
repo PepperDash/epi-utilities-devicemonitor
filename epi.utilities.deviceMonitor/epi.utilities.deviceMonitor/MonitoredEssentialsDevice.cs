@@ -61,23 +61,32 @@ namespace epi.utilities.deviceMonitor
 
         public MonitoredEssentialsDevice(EssentialsDevice device)
         {
+			NameFeedback = new StringFeedback(() => Name);
+			StatusFeedback = new IntFeedback(() => (int)Status);
+			var newDevice = (Device)DeviceManager.GetDeviceForKey(device.deviceKey);
+			
+			if (newDevice == null)
+			{
+				Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device with Key:{0} Does not exists", device.deviceKey);
+				return;
+			}
+			Name = newDevice.Name;
+			
 
-            var newDevice = DeviceManager.GetDeviceForKey(device.deviceKey);
+			var newStatusMonitorBase = newDevice as ICommunicationMonitor;
+			if (newStatusMonitorBase == null)
+			{
+				Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device {0} Does not support ICommunicationMonitor", device.deviceKey);
+				return;
+			}
+
+			JoinNumber = device.joinNumber;
+			UseInRoomHealth = device.useInRoomHealth;
+
+			newStatusMonitorBase.CommunicationMonitor.StatusChange += new EventHandler<MonitorStatusChangeEventArgs>(StatusMonitor_StatusChange);
 
 
-
-            var newStatusMonitorBase = newDevice as StatusMonitorBase;
-            if (newStatusMonitorBase == null)
-                return;
-            JoinNumber = device.joinNumber;
-            UseInRoomHealth = device.useInRoomHealth;
-            
-            NameFeedback = new StringFeedback(() => Name);
-            StatusFeedback = new IntFeedback(() => (int)Status);
-
-            StatusMonitor = newStatusMonitorBase;
-
-            StatusMonitor.StatusChange += new EventHandler<MonitorStatusChangeEventArgs>(StatusMonitor_StatusChange);
+			 
         }
 
         void StatusMonitor_StatusChange(object sender, MonitorStatusChangeEventArgs e)

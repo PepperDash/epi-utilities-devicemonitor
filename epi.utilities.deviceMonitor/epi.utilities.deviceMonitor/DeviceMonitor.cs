@@ -39,6 +39,7 @@ namespace epi.utilities.deviceMonitor
         public static DeviceMonitor BuildDevice(DeviceConfig dc)
         {
             var newMe = new DeviceMonitor(dc.Key, dc.Name, dc);
+
             return newMe;
         }
 
@@ -68,6 +69,8 @@ namespace epi.utilities.deviceMonitor
         void monitoredDevice_StatusChangeEvent(object sender, EventArgs e)
         {
             MakeDeviceErrorString();
+
+
         }
 
         void BuildEssentialsDevices()
@@ -77,12 +80,15 @@ namespace epi.utilities.deviceMonitor
             foreach (var item in _Props.EssentialsDevices)
             {
                 Debug.Console(2, this, "Linking to Essentials Device : {0}", item.deviceKey);
+				
                 var monitoredDevice = new MonitoredEssentialsDevice(item);
-                if (monitoredDevice.JoinNumber != int.MaxValue)
+				/*
+				if (monitoredDevice.JoinNumber != int.MaxValue)
                 {
                     MonitoredEssentialsDevices.Add(monitoredDevice);
-                    monitoredDevice.StatusMonitor.StatusChange += new EventHandler<MonitorStatusChangeEventArgs>(StatusMonitor_StatusChange);
+                    //monitoredDevice.StatusMonitor.StatusChange += new EventHandler<MonitorStatusChangeEventArgs>(StatusMonitor_StatusChange);
                 }
+				*/ 
             }
         }
 

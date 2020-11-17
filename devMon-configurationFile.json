@@ -56,40 +56,7 @@
                 }
 
             },
-            {
-                "key": "StatusSign-1",
-                "name": "Status Sign 01",
-                "group": "api",
-                "type": "statussign",
-                "properties": {
-                    "control": {
-                        "cresnetId": "11"
-                    }
-                }
-            },
-            {
-                "key": "TempSense-1",
-                "name": "Rack 01",
-                "group": "api",
-                "type": "c2nrths",
-                "properties": {
-                    "control": {
-                        "cresnetId": "31"
-                    }
-                }
-            },
-            {
-                "key": "OccSense-1",
-                "uid": 5,
-                "type": "glsodtccn",
-                "name": "OccSense-01",
-                "group": "api",
-                "properties": {
-                    "control": {
-                        "cresnetId": "41"
-                    }
-                }
-            },           
+         
             {
                 "key": "Primary-Bridge-1",
                 "uid": 4,
