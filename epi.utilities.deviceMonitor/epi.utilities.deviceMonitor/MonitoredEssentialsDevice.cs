@@ -74,6 +74,7 @@ namespace epi.utilities.deviceMonitor
 			
 
 			var newStatusMonitorBase = newDevice as ICommunicationMonitor;
+			StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
 			if (newStatusMonitorBase == null)
 			{
 				Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device {0} Does not support ICommunicationMonitor", device.deviceKey);
@@ -82,7 +83,7 @@ namespace epi.utilities.deviceMonitor
 
 			JoinNumber = device.joinNumber;
 			UseInRoomHealth = device.useInRoomHealth;
-
+			
 			newStatusMonitorBase.CommunicationMonitor.StatusChange += new EventHandler<MonitorStatusChangeEventArgs>(StatusMonitor_StatusChange);
 
 

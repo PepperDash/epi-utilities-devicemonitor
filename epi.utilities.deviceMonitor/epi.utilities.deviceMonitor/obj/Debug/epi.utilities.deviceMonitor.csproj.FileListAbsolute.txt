@@ -44,3 +44,5 @@ C:\Users\JTA\Documents\Stash Folder\Plugins\epi-utilities-device-monitor\epi.uti
 C:\Users\JTA\Documents\Stash Folder\Plugins\epi-utilities-device-monitor\epi.utilities.deviceMonitor\epi.utilities.deviceMonitor\obj\Debug\epi.utilities.deviceMonitor.pdb
 C:\Users\JTA\Documents\Stash Folder\Plugins\epi-utilities-device-monitor\epi.utilities.deviceMonitor\epi.utilities.deviceMonitor\bin\Debug\SimplSharpNewtonsoft.dll
 C:\Users\JTA\Documents\Stash Folder\Plugins\epi-utilities-device-monitor\epi.utilities.deviceMonitor\epi.utilities.deviceMonitor\bin\Debug\SimplSharpReflectionInterface.dll
+C:\Users\JTA\Documents\Stash Folder\Plugins\epi-utilities-device-monitor\epi.utilities.deviceMonitor\epi.utilities.deviceMonitor\bin\Debug\Crestron.SimplSharpPro.Remotes.dll
+C:\Users\JTA\Documents\Stash Folder\Plugins\epi-utilities-device-monitor\epi.utilities.deviceMonitor\epi.utilities.deviceMonitor\bin\Debug\Crestron.SimplSharpPro.ThreeSeriesCards.dll
