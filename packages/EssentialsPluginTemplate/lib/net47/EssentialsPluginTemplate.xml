@@ -1,0 +1,506 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EssentialsPluginTemplate</name>
+    </assembly>
+    <members>
+        <member name="T:EssentialsPluginTemplate.EssentialsPluginLogicDeviceTemplate">
+            <summary>
+            Plugin device template for logic devices that don't communicate outside the program
+            </summary>
+            <remarks>
+            Rename the class to match the device plugin being developed.
+            </remarks>
+            <example>
+            "EssentialsPluginLogicDeviceTemplate" renamed to "SamsungMdcDevice"
+            </example>
+        </member>
+        <member name="F:EssentialsPluginTemplate.EssentialsPluginLogicDeviceTemplate._config">
+            <summary>
+            It is often desirable to store the config
+            </summary>
+        </member>
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginLogicDeviceTemplate.#ctor(System.String,System.String,EssentialsPluginTemplate.EssentialsPluginConfigObjectTemplate)">
+            <summary>
+            Plugin device constructor
+            </summary>
+            <param name="key">A string</param>
+            <param name="name">A string</param>
+            <param name="config">An EssentialsPluginConfigObjectTemplate object</param>
+        </member>
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginLogicDeviceTemplate.LinkToApi(Crestron.SimplSharpPro.DeviceSupport.BasicTriList,System.UInt32,System.String,PepperDash.Essentials.Core.Bridges.EiscApiAdvanced)">
+            <summary>
+            Links the plugin device to the EISC bridge
+            </summary>
+            <param name="trilist"></param>
+            <param name="joinStart"></param>
+            <param name="joinMapKey"></param>
+            <param name="bridge"></param>		
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:EssentialsPluginTemplate.EssentialsPluginBridgeJoinMapTemplate" -->
+        <member name="F:EssentialsPluginTemplate.EssentialsPluginBridgeJoinMapTemplate.IsOnline">
+            <summary>
+            Plugin online join map
+            </summary>
+            <remarks>
+            Reports the plugin online sate to SiMPL as a boolean value
+            </remarks>
+        </member>
+        <member name="F:EssentialsPluginTemplate.EssentialsPluginBridgeJoinMapTemplate.Connect">
+            <summary>
+            Plugin connect join map
+            </summary>
+            <remarks>
+            Typically used with socket based communications.  Connects (held) and disconnects (released) socket based communcations when triggered from SiMPL.
+            Additionally, the connection state feedback will report to SiMP Las a boolean value.
+            </remarks>
+        </member>
+        <member name="F:EssentialsPluginTemplate.EssentialsPluginBridgeJoinMapTemplate.Status">
+            <summary>
+            Plugin status join map
+            </summary>
+            <remarks>
+            Typically used with socket based communications.  Reports the socket state to SiMPL as an analog value.
+            </remarks>
+            <see cref="T:Crestron.SimplSharp.CrestronSockets.SocketStatus"/>
+        </member>
+        <member name="F:EssentialsPluginTemplate.EssentialsPluginBridgeJoinMapTemplate.DeviceName">
+            <summary>
+            Plugin device name
+            </summary>
+            <remarks>
+            Reports the plugin name, as read from the configuration file, to SiMPL as a string value.
+            </remarks>
+        </member>
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginBridgeJoinMapTemplate.#ctor(System.UInt32)">
+            <summary>
+            Plugin device BridgeJoinMap constructor
+            </summary>
+            <param name="joinStart">This will be the join it starts on the EISC bridge</param>
+        </member>
+        <member name="T:EssentialsPluginTemplate.EssentialsPluginCrestronDeviceTemplate">
+            <summary>
+            Plugin device
+            </summary>
+            <remarks>
+            Rename the class to match the device plugin being developed.
+            </remarks>
+            <example>
+            "EssentialsPluginDeviceTemplate" renamed to "SamsungMdcDevice"
+            </example>
+        </member>
+        <member name="F:EssentialsPluginTemplate.EssentialsPluginCrestronDeviceTemplate._config">
+            <summary>
+            It is often desirable to store the config
+            </summary>
+        </member>
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginCrestronDeviceTemplate.#ctor(System.String,System.String,EssentialsPluginTemplate.EssentialsPluginConfigObjectTemplate,Crestron.SimplSharpPro.GenericBase)">
+            <summary>
+            Plugin device constructor for Crestron devices
+            </summary>
+            <param name="key">A string</param>
+            <param name="name">A string</param>
+            <param name="config">An EssentialsPluginConfigObjectTemplate object</param>
+            <param name="hardware">A GenericBase object</param>
+        </member>
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginCrestronDeviceTemplate.LinkToApi(Crestron.SimplSharpPro.DeviceSupport.BasicTriList,System.UInt32,System.String,PepperDash.Essentials.Core.Bridges.EiscApiAdvanced)">
+            <summary>
+            Links the plugin device to the EISC bridge
+            </summary>
+            <param name="trilist">A BasicTriList object</param>
+            <param name="joinStart">A uint</param>
+            <param name="joinMapKey">A string</param>
+            <param name="bridge">An EiscApiAdvanced object</param>
+        </member>
+        <member name="T:EssentialsPluginTemplate.EssentialsPluginFactoryTemplate">
+            <summary>
+            Plugin factory for devices that require communications using IBasicCommunications or custom communication methods
+            </summary>
+            <remarks>
+            Rename the class to match the device plugin being developed and update the factory as needed.
+            If this class is not used, delete the class and delete the associated EssentialsPluginDeviceTemplate.cs file from the solution
+            </remarks>
+            <example>
+            "EssentialsPluginFactoryTemplate" renamed to "SamsungMdcFactory"
+            </example>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:EssentialsPluginTemplate.EssentialsPluginFactoryTemplate.#ctor" -->
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginFactoryTemplate.BuildDevice(PepperDash.Essentials.Core.Config.DeviceConfig)">
+            <summary>
+            Builds and returns an instance of EssentialsPluginDeviceTemplate
+            </summary>
+            <param name="dc">device configuration</param>
+            <returns>plugin device or null</returns>
+            <remarks>		
+            The example provided below takes the device key, name, properties config and the comms device created.
+            Modify the EssetnialsPlugingDeviceTemplate constructor as needed to meet the requirements of the plugin device.
+            </remarks>
+            <seealso cref="T:PepperDash.Core.eControlMethod"/>
+        </member>
+        <member name="T:EssentialsPluginTemplate.EssentialsPluginFactoryLogicDeviceTemplate">
+            <summary>
+            Plugin factory for devices that don't require communications using IBasicCommunications or custom communication methods ** logic only plugin **
+            </summary>
+            <remarks>
+            Rename the class to match the device plugin being developed and update the factory as needed.
+            If this class is not used, delete the class and delete the associated EssentialsPluginLogicDeviceTemplate.cs file from the solution
+            </remarks>
+            <example>
+            "EssentialsPluginFactoryTemplate" renamed to "MyLogicDeviceFactory"
+            </example>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:EssentialsPluginTemplate.EssentialsPluginFactoryLogicDeviceTemplate.#ctor" -->
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginFactoryLogicDeviceTemplate.BuildDevice(PepperDash.Essentials.Core.Config.DeviceConfig)">
+            <summary>
+            Builds and returns an instance of EssentialsPluginTemplateLogicDevice
+            </summary>
+            <param name="dc">device configuration</param>
+            <returns>plugin device or null</returns>
+            <remarks>		
+            The example provided below takes the device key, name, properties config and the comms device created.
+            Modify the EssetnialsPlugingDeviceTemplate constructor as needed to meet the requirements of the plugin device.
+            </remarks>
+            <seealso cref="T:PepperDash.Core.eControlMethod"/>
+        </member>
+        <member name="T:EssentialsPluginTemplate.EssentialsPluginFactoryCrestronDeviceTemplate">
+            <summary>
+            Plugin factory for Crestrn wrapper devices
+            </summary>
+            <remarks>
+            Rename the class to match the device plugin being developed and update the factory as needed.
+            If this class is not used, delete the class and delete the associated EssentialsPluginCrestronDeviceTemplate.cs file from the solution
+            </remarks>
+            <example>
+            "EssentialsPluginFactoryTemplate" renamed to "MyCrestronDeviceFactory"
+            </example>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:EssentialsPluginTemplate.EssentialsPluginFactoryCrestronDeviceTemplate.#ctor" -->
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginFactoryCrestronDeviceTemplate.BuildDevice(PepperDash.Essentials.Core.Config.DeviceConfig)">
+            <summary>
+            Builds and returns an instance of EssentialsPluginTemplateCrestronDevice
+            </summary>
+            <param name="dc">device configuration</param>
+            <returns>plugin device or null</returns>
+            <remarks>		
+            The example provided below takes the device key, name, properties config and the comms device created.
+            Modify the EssetnialsPlugingDeviceTemplate constructor as needed to meet the requirements of the plugin device.
+            </remarks>
+            <seealso cref="T:PepperDash.Core.eControlMethod"/>
+        </member>
+        <member name="T:EssentialsPluginTemplate.EssentialsPluginConfigObjectTemplate">
+            <summary>
+            Plugin device configuration object
+            </summary>
+            <remarks>
+            Rename the class to match the device plugin being created
+            </remarks>
+            <example>
+            "EssentialsPluginConfigObjectTemplate" renamed to "SamsungMdcConfig"
+            <code>
+            {
+            	"devices": [
+            		{
+            			"key": "essentialsPluginKey",
+            			"name": "Essentials Plugin Name",
+            			"type": "essentialsPluginTypeName",
+            			"group": "pluginDevices",
+            			"properties": {
+            				"control": {
+            					"method": "PepperDash.Core.eControlMethod",
+            					"controlPortDevKey": "examplePortDevKey",
+            					"controlPortNumber": 1,
+            					"comParams": {
+            						"baudRate": 9600,
+            						"dataBits": 8,
+            						"stopBits": 1,
+            						"parity": "None",
+            						"protocol": "RS232",
+            						"hardwareHandshake": "None",
+            						"softwareHandshake": "None"
+            					},
+            					"tcpSshProperties": {
+            						"address": "172.22.0.101",
+            						"port": 23,
+            						"username": "admin",
+            						"password": "password",
+            						"autoReconnect": true,
+            						"autoReconnectIntervalMs": 10000
+            					}
+            				},
+            				"pollTimeMs": 30000,
+            				"warningTimeoutMs": 180000,
+            				"errorTimeoutMs": 300000,
+            				"pluginCollection": {
+            					"item1": {
+            						"name": "Item 1",
+            						"value": 1
+            					}
+            					"item2": {
+            						"name": "Item 2",,
+            						"value": 2
+            					}
+            				}
+            			}
+            		}
+            	]
+            }
+            </code>
+            </example>
+        </member>
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginConfigObjectTemplate.#ctor">
+            <summary>
+            Constuctor
+            </summary>
+            <remarks>
+            If using a collection you must instantiate the collection in the constructor
+            to avoid exceptions when reading the configuration file 
+            </remarks>
+        </member>
+        <member name="P:EssentialsPluginTemplate.EssentialsPluginConfigObjectTemplate.Control">
+            <summary>
+            JSON control object
+            </summary>
+            <remarks>
+            Typically this object is not required, but in some instances it may be needed.  For example, when building a 
+            plugin that is using Telnet (TCP/IP) communications and requires login, the device will need to handle the login.
+            In order to do so, you will need the username and password in the "tcpSshProperties" object.
+            </remarks>
+            <example>
+            <code>
+            "control": {
+            	"method": "tcpIp",
+            	"controlPortDevKey": "processor",
+            	"controlPortNumber": 1,
+            	"comParams": {
+            		"baudRate": 9600,
+            		"dataBits": 8,
+            		"stopBits": 1,
+            		"parity": "None",
+            		"protocol": "RS232",
+            		"hardwareHandshake": "None",
+            		"softwareHandshake": "None"
+            	},
+            	"tcpSshProperties": {
+            		"address": "172.22.0.101",
+            		"port": 23,
+            		"username": "admin",
+            		"password": "password",
+            		"autoReconnect": true,
+            		"autoReconnectIntervalMs": 10000
+            	}
+            }				
+            </code>
+            </example>		
+        </member>
+        <member name="P:EssentialsPluginTemplate.EssentialsPluginConfigObjectTemplate.PollTimeMs">
+            <summary>
+            Serializes the poll time value
+            </summary>
+            <remarks>
+            This is an exmaple device plugin property.  This should be modified or deleted as needed for the plugin being built.
+            </remarks>
+            <value>
+            PollTimeMs property gets/sets the value as a long
+            </value>
+            <example>
+            <code>
+            "properties": {
+            	"polltimeMs": 30000
+            }
+            </code>
+            </example>
+        </member>
+        <member name="P:EssentialsPluginTemplate.EssentialsPluginConfigObjectTemplate.WarningTimeoutMs">
+            <summary>
+            Serializes the warning timeout value
+            </summary>
+            <remarks>
+            This is an exmaple device plugin property.  This should be modified or deleted as needed for the plugin being built.
+            </remarks>
+            <value>
+            WarningTimeoutMs property gets/sets the value as a long
+            </value>
+            <example>
+            <code>
+            "properties": {
+            	"warningTimeoutMs": 180000
+            }
+            </code>
+            </example>
+        </member>
+        <member name="P:EssentialsPluginTemplate.EssentialsPluginConfigObjectTemplate.ErrorTimeoutMs">
+            <summary>
+            Serializes the error timeout value
+            </summary>
+            /// <remarks>
+            This is an exmaple device plugin property.  This should be modified or deleted as needed for the plugin being built.
+            </remarks>
+            <value>
+            ErrorTimeoutMs property gets/sets the value as a long
+            </value>
+            <example>
+            <code>
+            "properties": {
+            	"errorTimeoutMs": 300000
+            }
+            </code>
+            </example>
+        </member>
+        <member name="P:EssentialsPluginTemplate.EssentialsPluginConfigObjectTemplate.PluginCollection">
+            <summary>
+            Example dictionary of objects
+            </summary>
+            <remarks>
+            This is an example collection configuration object.  This should be modified or deleted as needed for the plugin being built.
+            </remarks>
+            <example>
+            <code>
+            "properties": {
+            	"presets": {
+            		"preset1": {
+            			"enabled": true,
+            			"name": "Preset 1"
+            		}
+            	}
+            }
+            </code>
+            </example>
+            <example>
+            <code>
+            "properties": {
+            	"inputNames": {
+            		"input1": "Input 1",
+            		"input2": "Input 2"
+            	}
+            }
+            </code>
+            </example>
+        </member>
+        <member name="T:EssentialsPluginTemplate.EssentialsPluginConfigObjectDictionaryTemplate">
+            <summary>
+            Example plugin configuration dictionary object
+            </summary>
+            <remarks>
+            This is an example collection of configuration objects.  This can be modified or deleted as needed for the plugin being built.
+            </remarks>
+            <example>
+            <code>
+            "properties": {
+            	"dictionary": {
+            		"item1": {
+            			"name": "Item 1 Name",
+            			"value": "Item 1 Value"
+            		}
+            	}
+            }
+            </code>
+            </example>
+        </member>
+        <member name="P:EssentialsPluginTemplate.EssentialsPluginConfigObjectDictionaryTemplate.Name">
+            <summary>
+            Serializes collection name property
+            </summary>
+            <remarks>
+            This is an example collection of configuration objects.  This can be modified or deleted as needed for the plugin being built.
+            </remarks>
+        </member>
+        <member name="P:EssentialsPluginTemplate.EssentialsPluginConfigObjectDictionaryTemplate.Value">
+            <summary>
+            Serializes collection value property
+            </summary>
+            <remarks>
+            This is an example collection of configuration objects.  This can be modified or deleted as needed for the plugin being built.
+            </remarks>
+        </member>
+        <member name="T:EssentialsPluginTemplate.EssentialsPluginDeviceTemplate">
+            <summary>
+            Plugin device
+            </summary>
+            <remarks>
+            Rename the class to match the device plugin being developed.
+            </remarks>
+            <example>
+            "EssentialsPluginDeviceTemplate" renamed to "SamsungMdcDevice"
+            </example>
+        </member>
+        <member name="F:EssentialsPluginTemplate.EssentialsPluginDeviceTemplate.CommsDelimiter">
+            <summary>
+            Set this value to that of the delimiter used by the API (if applicable)
+            </summary>
+        </member>
+        <member name="F:EssentialsPluginTemplate.EssentialsPluginDeviceTemplate._config">
+            <summary>
+            It is often desirable to store the config
+            </summary>
+        </member>
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginDeviceTemplate.#ctor(System.String,System.String,EssentialsPluginTemplate.EssentialsPluginConfigObjectTemplate,PepperDash.Core.IBasicCommunication)">
+            <summary>
+            Plugin device constructor
+            </summary>
+            <param name="key">device key</param>
+            <param name="name">device name</param>
+            <param name="config">device configuration object</param>
+            <param name="comms">device communication as IBasicCommunication</param>
+            <see cref="T:PepperDash.Core.IBasicCommunication"/>
+            <seealso cref="T:Crestron.SimplSharp.CrestronSockets.SocketStatus"/>
+        </member>
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginDeviceTemplate.SendText(System.String)">
+            <summary>
+            Sends text to the device plugin comms
+            </summary>
+            <remarks>
+            Can be used to test commands with the device plugin using the DEVPROPS and DEVJSON console commands
+            </remarks>
+            <param name="text">Command to be sent</param>		
+        </member>
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginDeviceTemplate.SendBytes(System.Byte[])">
+            <summary>
+            Sends bytes to the device plugin comms
+            </summary>
+            <remarks>
+            Can be used to test commands with the device plugin using the DEVPROPS and DEVJSON console commands
+            </remarks>
+            <param name="bytes">Bytes to be sent</param>		
+        </member>
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginDeviceTemplate.Poll">
+            <summary>
+            Polls the device
+            </summary>
+            <remarks>
+            Poll method is used by the communication monitor.  Update the poll method as needed for the plugin being developed
+            </remarks>
+        </member>
+        <member name="M:EssentialsPluginTemplate.EssentialsPluginDeviceTemplate.LinkToApi(Crestron.SimplSharpPro.DeviceSupport.BasicTriList,System.UInt32,System.String,PepperDash.Essentials.Core.Bridges.EiscApiAdvanced)">
+            <summary>
+            Links the plugin device to the EISC bridge
+            </summary>
+            <param name="trilist"></param>
+            <param name="joinStart"></param>
+            <param name="joinMapKey"></param>
+            <param name="bridge"></param>
+        </member>
+        <member name="P:EssentialsPluginTemplate.EssentialsPluginDeviceTemplate.Connect">
+            <summary>
+            Connects/disconnects the comms of the plugin device
+            </summary>
+            <remarks>
+            triggers the _comms.Connect/Disconnect as well as thee comms monitor start/stop
+            </remarks>
+        </member>
+        <member name="P:EssentialsPluginTemplate.EssentialsPluginDeviceTemplate.ConnectFeedback">
+            <summary>
+            Reports connect feedback through the bridge
+            </summary>
+        </member>
+        <member name="P:EssentialsPluginTemplate.EssentialsPluginDeviceTemplate.OnlineFeedback">
+            <summary>
+            Reports online feedback through the bridge
+            </summary>
+        </member>
+        <member name="P:EssentialsPluginTemplate.EssentialsPluginDeviceTemplate.StatusFeedback">
+            <summary>
+            Reports socket status feedback through the bridge
+            </summary>
+        </member>
+    </members>
+</doc>
