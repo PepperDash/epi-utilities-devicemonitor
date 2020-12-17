@@ -78,7 +78,7 @@ namespace epi.utilities.deviceMonitor
         {
             get
             {
-                return _JoinNumber > 0 ? _JoinNumber - 1 : uint.MaxValue;
+                return _JoinNumber > 0 ? _JoinNumber : uint.MaxValue;
             }
             private set
             {
