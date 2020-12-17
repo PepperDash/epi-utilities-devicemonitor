@@ -25,12 +25,10 @@ namespace epi.utilities.deviceMonitor
         DeviceConfig _Dc;
 
         public event EventHandler<ErrorArgs> ErrorEvent;
-		private Action SendToDynFusion; 
         public DeviceMonitorProperties _Props;
-		public List<IKeyed> DevicesWithLogs; 
-        public List<MonitoredSimplDevice> MonitoredSimplDevices;
-        public List<MonitoredEssentialsDevice> MonitoredEssentialsDevices;
-
+		public List<IKeyed> DevicesWithLogs;
+		public Dictionary<string, MonitoredSimplDevice> MonitoredSimplDevices = new Dictionary<string, MonitoredSimplDevice>();
+		public Dictionary<string, MonitoredEssentialsDevice> MonitoredEssentialsDevices = new Dictionary<string, MonitoredEssentialsDevice>();
         public static void LoadPlugin()
         {
             DeviceFactory.AddFactoryForType("devicemonitor", DeviceMonitor.BuildDevice);
@@ -52,15 +50,8 @@ namespace epi.utilities.deviceMonitor
             _Dc = dc;
             _Props = JsonConvert.DeserializeObject<DeviceMonitorProperties>(dc.Properties.ToString());
             Debug.Console(2, this, "Made it to Device Constructor");
-            MonitoredSimplDevices = new List<MonitoredSimplDevice>();
 			DevicesWithLogs = new List<IKeyed>();
-            foreach (var item in _Props.SimplDevices)
-            {
 
-                var monitoredDevice = new MonitoredSimplDevice(item);
-                MonitoredSimplDevices.Add(monitoredDevice);
-                monitoredDevice.StatusChangeEvent += new EventHandler<EventArgs>(monitoredDevice_StatusChangeEvent);
-            }
             //AddPostActivationAction(BuildEssentialsDevices);   
         }
 
@@ -76,22 +67,25 @@ namespace epi.utilities.deviceMonitor
 
 		public override bool CustomActivate()
         {
-            Debug.Console(2, this, "Linking To Essentials Devices");
-			MonitoredEssentialsDevices = new List<MonitoredEssentialsDevice>();
-            foreach (var item in _Props.EssentialsDevices)
-            {
-                Debug.Console(2, this, "Linking to Essentials Device : {0}", item.deviceKey);
-				
-                var monitoredDevice = new MonitoredEssentialsDevice(item);
-				
-				if (monitoredDevice.JoinNumber != int.MaxValue)
-                {
-                    MonitoredEssentialsDevices.Add(monitoredDevice);
-		
-                    monitoredDevice.StatusMonitor.StatusChange += new EventHandler<MonitorStatusChangeEventArgs>(StatusMonitor_StatusChange);
-                }
-				 
-            }
+            Debug.Console(2, this, "Creating DeviceMonitor Links");
+			foreach (var item in _Props.Devices)
+			{
+				if(item.Value.deviceKey != null && item.Value.deviceKey.ToLower() != "simpl")
+				{
+					Debug.Console(2, this, "Creating Essentials Device : {0}", item.Value.deviceKey);
+					var monitoredDevice = new MonitoredEssentialsDevice(item.Value);
+					MonitoredEssentialsDevices.Add(item.Key, monitoredDevice);
+					monitoredDevice.StatusMonitor.StatusChange += new EventHandler<MonitorStatusChangeEventArgs>(StatusMonitor_StatusChange);
+				}
+				else 
+				{
+					Debug.Console(2, this, "Creating Simpl Device : {0}", item.Value.name);
+					var monitoredDevice = new MonitoredSimplDevice(item.Value);
+					MonitoredSimplDevices.Add(item.Key, monitoredDevice);
+					monitoredDevice.StatusChangeEvent += new EventHandler<EventArgs>(monitoredDevice_StatusChangeEvent);
+				}
+			}
+
 			foreach (var key in _Props.LogToDeviceKeys)
 			{
 				Debug.Console(2, this, "Looking For Device with Log: {0}", key);
@@ -112,7 +106,7 @@ namespace epi.utilities.deviceMonitor
             int count = 0;
 			var deviceString = "Room OK";
 			Debug.ErrorLogLevel status = Debug.ErrorLogLevel.None;
-            foreach (var item in MonitoredSimplDevices)
+            foreach (var item in MonitoredSimplDevices.Values)
             {
                 if (item.UseInRoomHealth && item.Status == eDeviceStatus.error)
                 {
@@ -127,9 +121,9 @@ namespace epi.utilities.deviceMonitor
                     count++;
                 }
             }
-            foreach (var item in MonitoredEssentialsDevices)
+            foreach (var item in MonitoredEssentialsDevices.Values)
             {
-                if (item.UseInRoomHealth && item.Status == eDeviceStatus.error)
+				if (item.UseInRoomHealth && item.Status == eDeviceStatus.error)
                 {
                     if (count == 0)
                     {
@@ -190,31 +184,23 @@ namespace epi.utilities.deviceMonitor
 
 			Debug.Console(1, "Linking to Trilist '{0}'", trilist.ID.ToString("X"));
 			Debug.Console(0, "Linking to DeviceMonitor: {0}", this.Name);
-
-			foreach (var item in this.MonitoredSimplDevices)
+			
+			foreach (var item in this.MonitoredSimplDevices.Values)
 			{
 				var device = item;
 				var join = joinMap.MultipurposeJoin + device.JoinNumber;
 
 				if (item.JoinNumber != uint.MaxValue)
 				{
-					if (item.MonitorType == eMonitoringType.serial)
-					{
-						Debug.Console(2, this, "{0} is Serial Monitored on join {1}", device.Name, join);
-						trilist.SetStringSigAction(join, (s) => device.StopTimerSerial());
-					}
-					else if (item.MonitorType == eMonitoringType.digital)
-					{
-						Debug.Console(2, this, "{0} is Digital Monitored on join {1}", device.Name, join);
-						trilist.SetBoolSigAction(join, device.DeviceOnline);
-					}
-
+					Debug.Console(2, this, "Linking Bridge to Simpl Device : {0}", item.Name);
+					trilist.SetStringSigAction(join, (s) => device.StopTimerSerial());
+					trilist.SetBoolSigAction(join, device.DeviceOnline);
 					device.IsOnlineFeedback.LinkInputSig(trilist.BooleanInput[join]);
 					device.StatusFeedback.LinkInputSig(trilist.UShortInput[join]);
 					device.NameFeedback.LinkInputSig(trilist.StringInput[join]);
 				}
 			}
-			foreach (var item in this.MonitoredEssentialsDevices)
+			foreach (var item in this.MonitoredEssentialsDevices.Values)
 			{
 				Debug.Console(2, this, "Linking Bridge to Essentials Device : {0}", item.Name);
 				var device = item;
@@ -228,7 +214,7 @@ namespace epi.utilities.deviceMonitor
 			{
 				if (args.DeviceOnLine)
 				{
-					foreach (var device in this.MonitoredSimplDevices)
+					foreach (var device in this.MonitoredSimplDevices.Values)
 					{
 						var join = joinMap.MultipurposeJoin + device.JoinNumber;
 
@@ -237,7 +223,7 @@ namespace epi.utilities.deviceMonitor
 						device.NameFeedback.FireUpdate();
 					}
 
-					foreach (var device in this.MonitoredEssentialsDevices)
+					foreach (var device in this.MonitoredEssentialsDevices.Values)
 					{
 						var join = joinMap.MultipurposeJoin + device.JoinNumber;
 
@@ -249,10 +235,35 @@ namespace epi.utilities.deviceMonitor
 				}
 			}
 			);
+			
 
 		}
-       
-    }
+
+
+		#region IPower Members
+
+		public BoolFeedback PowerIsOnFeedback
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public void PowerOff()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void PowerOn()
+		{
+			throw new NotImplementedException();
+		}
+
+		public void PowerToggle()
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
+	}
     public class ErrorArgs : EventArgs
     {
         public string DeviceError;

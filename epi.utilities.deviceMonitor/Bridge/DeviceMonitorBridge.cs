@@ -31,7 +31,7 @@ namespace epi.utilities.deviceMonitor
 
         public DeviceMonitorJoinMap()
         {
-            MultipurposeJoin = 1;
+            MultipurposeJoin = 0;
         }
 
         public override void OffsetJoinNumbers(uint joinStart)

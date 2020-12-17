@@ -12,8 +12,8 @@ namespace epi.utilities.deviceMonitor
 {
     public class MonitoredSimplDevice : IKeyed
     {
+		
         public CTimer timer = null;
-
         private string _Name;
         public string Name
         {
@@ -27,7 +27,6 @@ namespace epi.utilities.deviceMonitor
                 NameFeedback.FireUpdate();
             }
         }
-
         private eDeviceStatus _Status = eDeviceStatus.unknown;
         public eDeviceStatus Status
         {
@@ -42,11 +41,7 @@ namespace epi.utilities.deviceMonitor
                 StatusFeedback.FireUpdate();
             }
         }
-
         public event EventHandler<EventArgs> StatusChangeEvent;
-
-        public eMonitoringType MonitorType { get; private set; }
-
         private bool _IsOnline;
         public bool IsOnline
         {
@@ -60,7 +55,6 @@ namespace epi.utilities.deviceMonitor
                 IsOnlineFeedback.FireUpdate();
             }
         }
-
         private uint WarningTimeout;
         private long WarningTimerTimeout
         {
@@ -108,12 +102,12 @@ namespace epi.utilities.deviceMonitor
         /// <param name="timeout">Timeout in whole seconds to transition between states</param>
         public MonitoredSimplDevice(string name, uint joinNumber, string monitorType, uint warningTimeout, uint errorTimeout, bool useInRoomHealth)
         {
+			
             StatusFeedback = new IntFeedback(() => (int)Status);
             NameFeedback = new StringFeedback(() => Name);
             IsOnlineFeedback = new BoolFeedback(() => IsOnline);
             Name = name;
             JoinNumber = joinNumber;
-            MonitorType = (eMonitoringType)Enum.Parse(typeof(eMonitoringType), monitorType, true);
             Key = "MonitoredSimplDevice--" + Name;
             WarningTimeout = warningTimeout > 0 ? warningTimeout : 60;
             ErrorTimeout = errorTimeout > 0 && errorTimeout > WarningTimeout ? errorTimeout : 180;
@@ -124,19 +118,19 @@ namespace epi.utilities.deviceMonitor
         /// Builds a new MonitoredSimplDevice
         /// </summary>
         /// <param name="device">Full Object from Json</param>
-        public MonitoredSimplDevice(SimplDevice device)
+        public MonitoredSimplDevice(DeviceMonitorDevice device)
         {
             StatusFeedback = new IntFeedback(() => (int)Status);
             NameFeedback = new StringFeedback(() => Name);
             IsOnlineFeedback = new BoolFeedback(() => IsOnline);
             Name = device.name;
             JoinNumber = device.joinNumber;
-            MonitorType = (eMonitoringType)Enum.Parse(typeof(eMonitoringType), device.monitorType, true);
             Key = "MonitoredSimplDevice--" + Name;
 
             WarningTimeout = device.warningTimeout > 0 ? device.warningTimeout : 60;
             ErrorTimeout = device.errorTimeout > 0 && device.errorTimeout > WarningTimeout ? device.errorTimeout : 180;
-            UseInRoomHealth = device.useInRoomHealth;
+            UseInRoomHealth = device.logToDevices;
+			StartTimer();
         }
 
         public void DeviceOnline(bool Online)
@@ -150,7 +144,6 @@ namespace epi.utilities.deviceMonitor
                 }
                 else
                 {
-                    StartTimer();
                     Debug.Console(1, this, "Device Offline");
                 }
             }
@@ -245,5 +238,10 @@ namespace epi.utilities.deviceMonitor
         public string Key { get; set; }
 
         #endregion
-    }
+
+
+
+
+
+	}
 }

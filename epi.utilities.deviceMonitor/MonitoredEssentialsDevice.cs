@@ -10,7 +10,7 @@ using PepperDash.Essentials.DM;
 
 namespace epi.utilities.deviceMonitor
 {
-    public class MonitoredEssentialsDevice
+    public class MonitoredEssentialsDevice	
     {
         public StatusMonitorBase StatusMonitor;
 
@@ -59,18 +59,20 @@ namespace epi.utilities.deviceMonitor
         public StringFeedback NameFeedback;
         public IntFeedback StatusFeedback;
 
-        public MonitoredEssentialsDevice(EssentialsDevice device)
+        public MonitoredEssentialsDevice(DeviceMonitorDevice device)
         {
+
 			NameFeedback = new StringFeedback(() => Name);
 			StatusFeedback = new IntFeedback(() => (int)Status);
-			var newDevice = (Device)DeviceManager.GetDeviceForKey(device.deviceKey);
+			var newDevice = DeviceManager.GetDeviceForKey(device.deviceKey);
 			
 			if (newDevice == null)
 			{
 				Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device with Key:{0} Does not exists", device.deviceKey);
 				return;
-			}
-			Name = newDevice.Name;
+			} 
+			Name = device.name;
+			
 			
 
 			var newStatusMonitorBase = newDevice as ICommunicationMonitor;
@@ -82,7 +84,7 @@ namespace epi.utilities.deviceMonitor
 			}
 
 			JoinNumber = device.joinNumber;
-			UseInRoomHealth = device.useInRoomHealth;
+			UseInRoomHealth = device.logToDevices;
 			
 			newStatusMonitorBase.CommunicationMonitor.StatusChange += new EventHandler<MonitorStatusChangeEventArgs>(StatusMonitor_StatusChange);
 

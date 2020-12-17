@@ -13,8 +13,7 @@ namespace epi.utilities.deviceMonitor
     {
 		public string DynFusionKey { get; set; }
 		public List<string> LogToDeviceKeys; 
-        public List<SimplDevice> SimplDevices { get; set; }
-        public List<EssentialsDevice> EssentialsDevices { get; set; }
+        public Dictionary<string, DeviceMonitorDevice> Devices { get; set; }
 
 
         public uint defaultTimeout { get; set; }
@@ -23,20 +22,16 @@ namespace epi.utilities.deviceMonitor
 
     }
 
-    public class SimplDevice
+    public class DeviceMonitorDevice
     {
         public string name { get; set; }
         public uint joinNumber { get; set; }
-        public bool useInRoomHealth { get; set; }
+		public bool logToProcessor { get; set; }
+		public bool logToDevices { get; set; }
         public uint warningTimeout { get; set; }
         public uint errorTimeout { get; set; }
-        public string monitorType { get; set; }
+		public string deviceKey { get; set; }
     }
 
-    public class EssentialsDevice
-    {
-        public string deviceKey { get; set; }
-        public uint joinNumber { get; set; }
-        public bool useInRoomHealth { get; set; }
-    }
+
 }
