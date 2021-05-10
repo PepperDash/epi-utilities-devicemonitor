@@ -29,6 +29,9 @@ namespace epi.utilities.deviceMonitor
 		public List<IKeyed> DevicesWithLogs;
 		public Dictionary<string, MonitoredSimplDevice> MonitoredSimplDevices = new Dictionary<string, MonitoredSimplDevice>();
 		public Dictionary<string, MonitoredEssentialsDevice> MonitoredEssentialsDevices = new Dictionary<string, MonitoredEssentialsDevice>();
+		public const long WriteTimeout = 60000;
+		public static CTimer WriteTimer;
+
         public static void LoadPlugin()
         {
             DeviceFactory.AddFactoryForType("devicemonitor", DeviceMonitor.BuildDevice);
@@ -67,17 +70,33 @@ namespace epi.utilities.deviceMonitor
 
 		public override bool CustomActivate()
         {
+
             Debug.Console(2, this, "Creating DeviceMonitor Links");
 			foreach (var item in _Props.Devices)
 			{
-				if(item.Value.deviceKey != null && item.Value.deviceKey.ToLower() != "simpl")
+				if (item.Value.deviceKey != null)
 				{
 					Debug.Console(2, this, "Creating Essentials Device : {0}", item.Value.deviceKey);
-					var monitoredDevice = new MonitoredEssentialsDevice(item.Value);
+					Device newDevice = DeviceManager.GetDeviceForKey(item.Value.deviceKey) as Device; 
+
+					if (newDevice == null)
+					{
+						Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device with Key:{0} Does not exists", item.Value.deviceKey);
+						continue;
+					}
+					var newStatusMonitorBase = newDevice as ICommunicationMonitor;
+					var StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
+					if (newStatusMonitorBase == null)
+					{
+						Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device {0} Does not support ICommunicationMonitor", item.Value.deviceKey);
+						continue;
+					}
+					var monitoredDevice = new MonitoredEssentialsDevice(item.Value, newDevice, newStatusMonitorBase);
 					MonitoredEssentialsDevices.Add(item.Key, monitoredDevice);
 					monitoredDevice.StatusMonitor.StatusChange += new EventHandler<MonitorStatusChangeEventArgs>(StatusMonitor_StatusChange);
+		
 				}
-				else 
+				else
 				{
 					Debug.Console(2, this, "Creating Simpl Device : {0}", item.Value.name);
 					var monitoredDevice = new MonitoredSimplDevice(item.Value);
@@ -103,52 +122,58 @@ namespace epi.utilities.deviceMonitor
 
         private void MakeDeviceErrorString()
         {
-            int count = 0;
+			ResetTimer();	
+        }
+
+		private void WriteLog(object o)
+		{
+			if (WriteTimer != null)
+				WriteTimer.Stop();
+			int count = 0;
 			var deviceString = "Room OK";
 			Debug.ErrorLogLevel status = Debug.ErrorLogLevel.None;
-            foreach (var item in MonitoredSimplDevices.Values)
-            {
-                if (item.UseInRoomHealth && item.Status == eDeviceStatus.error)
-                {
-                    if (count == 0)
-                    {
-                        deviceString = item.Name;
-                    }
-                    else
-                    {
-                        deviceString += string.Format(",{0}", item.Name);
-                    }
-                    count++;
-                }
-            }
-            foreach (var item in MonitoredEssentialsDevices.Values)
-            {
+			foreach (var item in MonitoredSimplDevices.Values)
+			{
 				if (item.UseInRoomHealth && item.Status == eDeviceStatus.error)
-                {
-                    if (count == 0)
-                    {
-                        deviceString = item.Name;
-                    }
-                    else
-                    {
-                        deviceString += string.Format(",{0}", item.Name);
-                    }
-                    count++;
-                }
-            }
-            
-            var tempErrorMessage = "";
-            if (count > 0)
-            {
+				{
+					if (count == 0)
+					{
+						deviceString = item.Name;
+					}
+					else
+					{
+						deviceString += string.Format(",{0}", item.Name);
+					}
+					count++;
+				}
+			}
+			foreach (var item in MonitoredEssentialsDevices.Values)
+			{
+				if (item.UseInRoomHealth && item.Status == eDeviceStatus.error)
+				{
+					if (count == 0)
+					{
+						deviceString = item.Name;
+					}
+					else
+					{
+						deviceString += string.Format(",{0}", item.Name);
+					}
+					count++;
+				}
+			}
+			var tempErrorMessage = "";
+			if (count > 0)
+			{
 				status = Debug.ErrorLogLevel.Error;
-                tempErrorMessage = string.Format("Error! {1} offline.", status, deviceString);
-            }
-            else
-            {
-                tempErrorMessage = "Room OK";
-            }
+				tempErrorMessage = string.Format("Error! {1} offline.", status, deviceString);
+			}
+			else
+			{
+				tempErrorMessage = "Room OK";
+			}
 			Debug.Console(2, this, tempErrorMessage);
-			
+
 			if (DevicesWithLogs.Count > 0)
 			{
 				foreach (var device in DevicesWithLogs)
@@ -160,15 +185,24 @@ namespace epi.utilities.deviceMonitor
 					}
 				}
 			}
-			 
-            var handler = ErrorEvent;
-            if (handler != null)
-            {
-                handler(this, new ErrorArgs(tempErrorMessage));
-            }
-            
-        }
 
+			var handler = ErrorEvent;
+			if (handler != null)
+			{
+				handler(this, new ErrorArgs(tempErrorMessage));
+			}
+
+		}
+
+		private void ResetTimer()
+		{
+			if (WriteTimer == null)
+				WriteTimer = new CTimer(WriteLog, WriteTimeout);
+
+			WriteTimer.Reset(WriteTimeout);
+
+			Debug.Console(1, this, "Log timer has been reset.");
+		}
 
 		public override void LinkToApi(BasicTriList trilist, uint joinStart, string joinMapKey, EiscApiAdvanced bridge)
 		{
