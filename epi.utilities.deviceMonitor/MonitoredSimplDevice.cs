@@ -144,6 +144,7 @@ namespace epi.utilities.deviceMonitor
                 }
                 else
                 {
+                    StartTimer();
                     Debug.Console(1, this, "Device Offline");
                 }
             }
