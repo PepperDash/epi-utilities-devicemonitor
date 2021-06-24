@@ -31,6 +31,7 @@ namespace epi.utilities.deviceMonitor
 		public Dictionary<string, MonitoredEssentialsDevice> MonitoredEssentialsDevices = new Dictionary<string, MonitoredEssentialsDevice>();
 		public const long WriteTimeout = 60000;
 		public static CTimer WriteTimer;
+        private int writeAttemptCount = 0;
 
         public static void LoadPlugin()
         {
@@ -122,13 +123,22 @@ namespace epi.utilities.deviceMonitor
 
         private void MakeDeviceErrorString()
         {
-			ResetTimer();	
+            writeAttemptCount++;
+            if (writeAttemptCount < 10)
+            {
+                ResetTimer();
+            }
+            else
+            {
+                WriteLog(null);
+            }
         }
 
 		private void WriteLog(object o)
 		{
 			if (WriteTimer != null)
 				WriteTimer.Stop();
+            writeAttemptCount = 0;
 			int count = 0;
 			var deviceString = "Room OK";
 			Debug.ErrorLogLevel status = Debug.ErrorLogLevel.None;

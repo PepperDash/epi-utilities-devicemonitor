@@ -217,15 +217,14 @@ namespace epi.utilities.deviceMonitor
                 if (Status != status && JoinNumber != int.MaxValue)
                 {
                     Status = status;
-                }
-                var handler = StatusChangeEvent;
-                if (handler == null)
-                {
-                    return;
-                }
-                    
-                handler(this, new EventArgs());
-                
+                    var handler = StatusChangeEvent;
+                    if (handler == null)
+                    {
+                        return;
+                    }
+
+                    handler(this, new EventArgs());
+                }                
             }
             catch (Exception ex)
             {
