@@ -29,24 +29,8 @@ namespace epi.utilities.deviceMonitor
 		public List<IKeyed> DevicesWithLogs;
 		public Dictionary<string, MonitoredSimplDevice> MonitoredSimplDevices = new Dictionary<string, MonitoredSimplDevice>();
 		public Dictionary<string, MonitoredEssentialsDevice> MonitoredEssentialsDevices = new Dictionary<string, MonitoredEssentialsDevice>();
-		public const long WriteTimeout = 60000;
-		public static CTimer WriteTimer;
-        private int writeAttemptCount = 0;
-
-        public static void LoadPlugin()
-        {
-            DeviceFactory.AddFactoryForType("devicemonitor", DeviceMonitor.BuildDevice);
-        }
-
-        public static string MinimumEssentialsFrameworkVersion = "1.6.10";
-
-
-        public static DeviceMonitor BuildDevice(DeviceConfig dc)
-        {
-            var newMe = new DeviceMonitor(dc.Key, dc.Name, dc);
-
-            return newMe;
-        }
+        private CMutex writeWait = new CMutex();
+        private bool writeLock = false;
 
         public DeviceMonitor(string key, string name, DeviceConfig dc)
             : base(key)
@@ -54,9 +38,7 @@ namespace epi.utilities.deviceMonitor
             _Dc = dc;
             _Props = JsonConvert.DeserializeObject<DeviceMonitorProperties>(dc.Properties.ToString());
             Debug.Console(2, this, "Made it to Device Constructor");
-			DevicesWithLogs = new List<IKeyed>();
-
-            //AddPostActivationAction(BuildEssentialsDevices);   
+			DevicesWithLogs = new List<IKeyed>(); 
         }
 
         void StatusMonitor_StatusChange(object sender, MonitorStatusChangeEventArgs e)
@@ -123,22 +105,30 @@ namespace epi.utilities.deviceMonitor
 
         private void MakeDeviceErrorString()
         {
-            writeAttemptCount++;
-            if (writeAttemptCount < 10)
+            try
             {
-                ResetTimer();
+                if (!writeLock)
+                {
+                    writeLock = true;
+                    bool mutex = writeWait.WaitForMutex(40000);
+                    writeLock = false;
+                    if (mutex)
+                    {
+                        WriteLog(null);
+                        CrestronEnvironment.Sleep(30000);
+                        writeWait.ReleaseMutex();
+                    }
+                }
             }
-            else
+            catch
             {
-                WriteLog(null);
+                writeWait.ReleaseMutex();
+                writeLock = false;
             }
         }
 
 		private void WriteLog(object o)
 		{
-			if (WriteTimer != null)
-				WriteTimer.Stop();
-            writeAttemptCount = 0;
 			int count = 0;
 			var deviceString = "Room OK";
 			Debug.ErrorLogLevel status = Debug.ErrorLogLevel.None;
@@ -152,7 +142,7 @@ namespace epi.utilities.deviceMonitor
 					}
 					else
 					{
-						deviceString += string.Format(",{0}", item.Name);
+						deviceString += string.Format(", {0}", item.Name);
 					}
 					count++;
 				}
@@ -167,7 +157,7 @@ namespace epi.utilities.deviceMonitor
 					}
 					else
 					{
-						deviceString += string.Format(",{0}", item.Name);
+						deviceString += string.Format(", {0}", item.Name);
 					}
 					count++;
 				}
@@ -202,16 +192,6 @@ namespace epi.utilities.deviceMonitor
 				handler(this, new ErrorArgs(tempErrorMessage));
 			}
 
-		}
-
-		private void ResetTimer()
-		{
-			if (WriteTimer == null)
-				WriteTimer = new CTimer(WriteLog, WriteTimeout);
-
-			WriteTimer.Reset(WriteTimeout);
-
-			Debug.Console(1, this, "Log timer has been reset.");
 		}
 
 		public override void LinkToApi(BasicTriList trilist, uint joinStart, string joinMapKey, EiscApiAdvanced bridge)

@@ -97,6 +97,7 @@
   <ItemGroup>
     <Compile Include="Bridge\DeviceMonitorBridge.cs" />
     <Compile Include="DeviceMonitor.cs" />
+    <Compile Include="DeviceMonitorFactory.cs" />
     <Compile Include="MonitoredEssentialsDevice.cs" />
     <Compile Include="MonitoredSimplDevice.cs" />
     <Compile Include="DeviceMonitorProperties.cs" />
