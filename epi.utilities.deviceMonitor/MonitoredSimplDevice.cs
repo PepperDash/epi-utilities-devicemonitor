@@ -112,6 +112,7 @@ namespace epi.utilities.deviceMonitor
             WarningTimeout = warningTimeout > 0 ? warningTimeout : 60;
             ErrorTimeout = errorTimeout > 0 && errorTimeout > WarningTimeout ? errorTimeout : 180;
             UseInRoomHealth = useInRoomHealth;
+            StartTimer();
         }
 
         /// <summary>
@@ -126,7 +127,6 @@ namespace epi.utilities.deviceMonitor
             Name = device.name;
             JoinNumber = device.joinNumber;
             Key = "MonitoredSimplDevice--" + Name;
-
             WarningTimeout = device.warningTimeout > 0 ? device.warningTimeout : 60;
             ErrorTimeout = device.errorTimeout > 0 && device.errorTimeout > WarningTimeout ? device.errorTimeout : 180;
             UseInRoomHealth = device.logToDevices;
@@ -199,7 +199,8 @@ namespace epi.utilities.deviceMonitor
             if (Status != eDeviceStatus.warning)
             {
                 changeStatus(eDeviceStatus.warning);
-                timer.Dispose();
+                if(timer!= null)
+                    timer.Dispose();
                 timer = new CTimer(warningTimerExpired, ErrorTimerTimeout - WarningTimerTimeout);
             }
             else

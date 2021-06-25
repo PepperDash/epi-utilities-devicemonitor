@@ -42,12 +42,7 @@ namespace epi.utilities.deviceMonitor
 			DevicesWithLogs = new List<IKeyed>(); 
         }
 
-        void StatusMonitor_StatusChange(object sender, MonitorStatusChangeEventArgs e)
-        {
-            MakeDeviceErrorString();
-        }
-
-        void monitoredDevice_StatusChangeEvent(object sender, EventArgs e)
+        void StatusMonitor_StatusChange(object sender, EventArgs e)
         {
             MakeDeviceErrorString();
         }
@@ -85,7 +80,7 @@ namespace epi.utilities.deviceMonitor
 					Debug.Console(2, this, "Creating Simpl Device : {0}", item.Value.name);
 					var monitoredDevice = new MonitoredSimplDevice(item.Value);
 					MonitoredSimplDevices.Add(item.Key, monitoredDevice);
-					monitoredDevice.StatusChangeEvent += new EventHandler<EventArgs>(monitoredDevice_StatusChangeEvent);
+                    monitoredDevice.StatusChangeEvent += new EventHandler<EventArgs>(StatusMonitor_StatusChange);
 				}
 			}
 
