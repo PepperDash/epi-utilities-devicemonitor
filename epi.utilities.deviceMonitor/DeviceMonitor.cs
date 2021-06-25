@@ -31,6 +31,7 @@ namespace epi.utilities.deviceMonitor
 		public Dictionary<string, MonitoredEssentialsDevice> MonitoredEssentialsDevices = new Dictionary<string, MonitoredEssentialsDevice>();
         private CMutex writeWait = new CMutex();
         private bool writeLock = false;
+        private bool activateComplete = false;
 
         public DeviceMonitor(string key, string name, DeviceConfig dc)
             : base(key)
@@ -100,6 +101,12 @@ namespace epi.utilities.deviceMonitor
 				
 			}
 
+            AddPostActivationAction(() =>
+            {
+                activateComplete = true;
+                MakeDeviceErrorString();
+            });
+
 			return base.CustomActivate();
         }
 
@@ -107,13 +114,12 @@ namespace epi.utilities.deviceMonitor
         {
             try
             {
-                if (!writeLock)
+                if (!writeLock && activateComplete)
                 {
                     writeLock = true;
-                    bool mutex = writeWait.WaitForMutex(40000);
-                    writeLock = false;
-                    if (mutex)
+                    if (writeWait.WaitForMutex())
                     {
+                        writeLock = false;
                         WriteLog(null);
                         CrestronEnvironment.Sleep(30000);
                         writeWait.ReleaseMutex();
