@@ -220,6 +220,10 @@ namespace epi.utilities.deviceMonitor
 					Debug.Console(2, this, "Linking Bridge to Simpl Device : {0}", item.Name);
 					trilist.SetStringSigAction(join, (s) => device.StopTimerSerial());
 					trilist.SetBoolSigAction(join, device.DeviceOnline);
+					if (trilist.BooleanOutput[join].BoolValue)
+					{
+						device.DeviceOnline(true); 
+					}
 					device.IsOnlineFeedback.LinkInputSig(trilist.BooleanInput[join]);
 					device.StatusFeedback.LinkInputSig(trilist.UShortInput[join]);
 					device.NameFeedback.LinkInputSig(trilist.StringInput[join]);
