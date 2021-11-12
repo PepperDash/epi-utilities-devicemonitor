@@ -29,7 +29,8 @@ namespace epi.utilities.deviceMonitor
 		public List<IKeyed> DevicesWithLogs;
 		public Dictionary<string, MonitoredSimplDevice> MonitoredSimplDevices = new Dictionary<string, MonitoredSimplDevice>();
 		public Dictionary<string, MonitoredEssentialsDevice> MonitoredEssentialsDevices = new Dictionary<string, MonitoredEssentialsDevice>();
-        private CMutex writeWait = new CMutex();
+		public const long WriteTimeout = 60000;
+		public static CTimer WriteTimer;
         private bool writeLock = false;
         private bool activateComplete = false;
 
@@ -43,7 +44,8 @@ namespace epi.utilities.deviceMonitor
         }
 
         void StatusMonitor_StatusChange(object sender, EventArgs e)
-        {
+		{
+			
             MakeDeviceErrorString();
         }
 
@@ -106,27 +108,16 @@ namespace epi.utilities.deviceMonitor
         }
 
         private void MakeDeviceErrorString()
+        
         {
-            try
-            {
-                if (!writeLock && activateComplete)
-                {
-                    writeLock = true;
-                    if (writeWait.WaitForMutex())
-                    {
-                        writeLock = false;
-                        WriteLog(null);
-                        CrestronEnvironment.Sleep(30000);
-                        writeWait.ReleaseMutex();
-                    }
-                }
-            }
-            catch
-            {
-                writeWait.ReleaseMutex();
-                writeLock = false;
-            }
+            if (WriteTimer == null)
+                WriteTimer = new CTimer(WriteLog, WriteTimeout);
+
+            WriteTimer.Reset(WriteTimeout);
+
+            Debug.Console(1, this, "Log timer has been reset.");
         }
+
 
 		private void WriteLog(object o)
 		{
