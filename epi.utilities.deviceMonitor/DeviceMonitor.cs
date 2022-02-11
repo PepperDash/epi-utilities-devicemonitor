@@ -51,38 +51,53 @@ namespace epi.utilities.deviceMonitor
 
 		public override bool CustomActivate()
         {
-
+			
             Debug.Console(2, this, "Creating DeviceMonitor Links");
 			foreach (var item in _Props.Devices)
 			{
-				if (item.Value.deviceKey != null)
+				try
 				{
-					Debug.Console(2, this, "Creating Essentials Device : {0}", item.Value.deviceKey);
-					Device newDevice = DeviceManager.GetDeviceForKey(item.Value.deviceKey) as Device; 
+					if (item.Value.deviceKey != null)
+					{
+						Debug.Console(2, this, "Creating Essentials Device : {0}", item.Value.deviceKey);
+						Device newDevice = DeviceManager.GetDeviceForKey(item.Value.deviceKey) as Device;
 
-					if (newDevice == null)
-					{
-						Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device with Key:{0} Does not exists", item.Value.deviceKey);
-						continue;
+						if (newDevice == null)
+						{
+							Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device with Key:{0} Does not exists", item.Value.deviceKey);
+							continue;
+						}
+
+
+						var newStatusMonitorBase = newDevice as ICommunicationMonitor;
+
+						if (newStatusMonitorBase != null)
+						{
+							Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device {0} Does not support ICommunicationMonitor", item.Value.deviceKey);
+							var StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
+							var monitoredDevice = new MonitoredEssentialsDevice(item.Value, newDevice, newStatusMonitorBase);
+							MonitoredEssentialsDevices.Add(item.Key, monitoredDevice);
+							monitoredDevice.StatusMonitor.StatusChange += new EventHandler<MonitorStatusChangeEventArgs>(StatusMonitor_StatusChange);
+							continue;
+						}
+						
+
+						
+
+
 					}
-					var newStatusMonitorBase = newDevice as ICommunicationMonitor;
-					var StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
-					if (newStatusMonitorBase == null)
+					else
 					{
-						Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device {0} Does not support ICommunicationMonitor", item.Value.deviceKey);
-						continue;
+						Debug.Console(2, this, "Creating Simpl Device : {0}", item.Value.name);
+						var monitoredDevice = new MonitoredSimplDevice(item.Value);
+						MonitoredSimplDevices.Add(item.Key, monitoredDevice);
+						monitoredDevice.StatusChangeEvent += new EventHandler<EventArgs>(StatusMonitor_StatusChange);
 					}
-					var monitoredDevice = new MonitoredEssentialsDevice(item.Value, newDevice, newStatusMonitorBase);
-					MonitoredEssentialsDevices.Add(item.Key, monitoredDevice);
-					monitoredDevice.StatusMonitor.StatusChange += new EventHandler<MonitorStatusChangeEventArgs>(StatusMonitor_StatusChange);
-		
 				}
-				else
+				catch (Exception ex)
 				{
-					Debug.Console(2, this, "Creating Simpl Device : {0}", item.Value.name);
-					var monitoredDevice = new MonitoredSimplDevice(item.Value);
-					MonitoredSimplDevices.Add(item.Key, monitoredDevice);
-                    monitoredDevice.StatusChangeEvent += new EventHandler<EventArgs>(StatusMonitor_StatusChange);
+					Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device {0} Does not support ICommunicationMonitor {1}", item.Value.deviceKey, ex);
+					continue;
 				}
 			}
 
