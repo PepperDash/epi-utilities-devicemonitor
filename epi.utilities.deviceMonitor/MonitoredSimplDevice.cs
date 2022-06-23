@@ -216,10 +216,10 @@ namespace epi.utilities.deviceMonitor
             try
             {
                 Debug.Console(1, this, "ChangeStatus - {0}",  (int)status);
-				Status = status;
+				
                 if (Status != status && JoinNumber != int.MaxValue)
                 {
-                    
+					Status = status;
                     var handler = StatusChangeEvent;
                     if (handler == null)
                     {
