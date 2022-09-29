@@ -413,6 +413,11 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:PepperDash.Core.Device.Initialize">
+            <summary>
+            Call this method to start communications with a device. Overriding classes do not need to call base.Initialize()
+            </summary>
+        </member>
         <member name="M:PepperDash.Core.Device.OnFalse(System.Object,System.Action)">
             <summary>
             Helper method to check object for bool value false and fire an Action method
@@ -1014,11 +1019,6 @@
             Represents a device with stream debugging capablities
             </summary>
         </member>
-        <member name="F:PepperDash.Core.GenericUdpServer.MessageQueue">
-            <summary>
-            Queue to temporarily store received messages with the source IP and Port info
-            </summary>
-        </member>
         <member name="M:PepperDash.Core.GenericUdpServer.#ctor">
             <summary>
             Constructor for S+. Make sure to set key, address, port, and buffersize using init method
@@ -1069,12 +1069,6 @@
             </summary>
             <param name="server"></param>
             <param name="numBytes"></param>
-        </member>
-        <member name="M:PepperDash.Core.GenericUdpServer.DequeueEvent">
-            <summary>
-            This method gets spooled up in its own thread an protected by a CCriticalSection to prevent multiple threads from running concurrently.
-            It will dequeue items as they are enqueued automatically.
-            </summary>
         </member>
         <member name="M:PepperDash.Core.GenericUdpServer.SendText(System.String)">
             <summary>
@@ -1854,9 +1848,20 @@
             Constructor
             </summary>
         </member>
-        <member name="F:PepperDash.Core.Debug.FilePathPrefix">
+        <member name="T:PepperDash.Core.Debug">
+            <summary>
+            Contains debug commands for use in various situations
+            </summary>
+        </member>
+        <member name="F:PepperDash.Core.Debug.OldFilePathPrefix">
             <summary>
             Describes the folder location where a given program stores it's debug level memory. By default, the
+            file written will be named appNdebug where N is 1-10.
+            </summary>
+        </member>
+        <member name="F:PepperDash.Core.Debug.NewFilePathPrefix">
+            <summary>
+            Describes the new folder location where a given program stores it's debug level memory. By default, the
             file written will be named appNdebug where N is 1-10.
             </summary>
         </member>
@@ -1865,7 +1870,7 @@
             The name of the file containing the current debug settings.
             </summary>
         </member>
-        <member name="F:PepperDash.Core.Debug.ExcludeAllMode">
+        <member name="F:PepperDash.Core.Debug._excludeAllMode">
             <summary>
             When true, the IncludedExcludedKeys dict will contain keys to include. 
             When false (default), IncludedExcludedKeys will contain keys to exclude.
@@ -1941,6 +1946,12 @@
             Logs to Console when at-level, and all messages to error log, including device key			
             </summary>
         </member>
+        <member name="M:PepperDash.Core.Debug.Console(System.UInt32,PepperDash.Core.IKeyed,PepperDash.Core.Debug.ErrorLogLevel,System.String,System.Object[])">
+            <summary>
+            Prints message to console if current debug level is equal to or higher than the level of this message. Always sends message to Error Log.
+            Uses CrestronConsole.PrintLine.
+            </summary>
+        </member>
         <member name="M:PepperDash.Core.Debug.Console(System.UInt32,PepperDash.Core.Debug.ErrorLogLevel,System.String,System.Object[])">
             <summary>
             Logs to Console when at-level, and all messages to error log
@@ -1952,9 +1963,6 @@
             or above the level provided, then the output will be written to both console and the log. Otherwise
             it will only be written to the log.
             </summary>
-            <param name="level"></param>
-            <param name="format"></param>
-            <param name="items"></param>
         </member>
         <member name="M:PepperDash.Core.Debug.ConsoleWithLog(System.UInt32,PepperDash.Core.IKeyed,System.String,System.Object[])">
             <summary>
@@ -1962,10 +1970,6 @@
             or above the level provided, then the output will be written to both console and the log. Otherwise
             it will only be written to the log.
             </summary>
-            <param name="level"></param>
-            <param name="dev"></param>
-            <param name="format">String.format string</param>
-            <param name="items">Parameters for substitution in the format string.</param>
         </member>
         <member name="M:PepperDash.Core.Debug.LogError(PepperDash.Core.Debug.ErrorLogLevel,System.String)">
             <summary>
@@ -1992,6 +1996,21 @@
         <member name="M:PepperDash.Core.Debug.GetMemoryFileName">
             <summary>
             Helper to get the file path for this app's debug memory
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.Debug.Level">
+            <summary>
+            Debug level to set for a given program.
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.Debug.DoNotLoadOnNextBoot">
+            <summary>
+            When this is true, the configuration file will NOT be loaded until triggered by either a console command or a signal
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.Debug.PepperDashCoreVersion">
+            <summary>
+            Version for the currently loaded PepperDashCore dll
             </summary>
         </member>
         <member name="M:PepperDash.Core.Config.PortalConfigReader.ReadAndMergeFileIfNecessary(System.String,System.String)">
@@ -2316,6 +2335,337 @@
             Receive Queue size must be greater than 20 or defaults to 20
             </summary>
         </member>
+        <member name="M:PepperDash.Core.QscCoreDoubleTcpIpClient.#ctor">
+            <summary>
+            Default constuctor for S+
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.QscCoreDoubleTcpIpClient.Connect(System.String,System.String,System.Int32,System.String,System.Int32,System.String,System.String,System.Int32,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+            <param name="masterAddress"></param>
+            <param name="masterPort"></param>
+            <param name="slaveAddress"></param>
+            <param name="slavePort"></param>
+            <param name="username"></param>
+            <param name="password"></param>
+            <param name="pollingIntervalSeconds"></param>
+        </member>
+        <member name="M:PepperDash.Core.QscCoreDoubleTcpIpClient.Disconnect">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.QscCoreDoubleTcpIpClient.SendText(System.String)">
+            <summary>
+            Does not include line feed
+            </summary>
+        </member>
+        <member name="T:PepperDash.Core.GenericSecureTcpIpClient">
+            <summary>
+            A class to handle secure TCP/IP communications with a server
+            </summary>
+        </member>
+        <member name="F:PepperDash.Core.GenericSecureTcpIpClient._client">
+            <summary>
+            Internal secure client
+            </summary>
+        </member>
+        <member name="F:PepperDash.Core.GenericSecureTcpIpClient.DisconnectCalledByUser">
+            <summary>
+            Flag Set only when the disconnect method is called.
+            </summary>
+        </member>
+        <member name="F:PepperDash.Core.GenericSecureTcpIpClient.IsTryingToConnect">
+            <summary>
+            Semaphore on connect method
+            </summary>
+        </member>
+        <member name="F:PepperDash.Core.GenericSecureTcpIpClient.DequeueLock">
+            <summary>
+            Queue lock
+            </summary>
+        </member>
+        <member name="F:PepperDash.Core.GenericSecureTcpIpClient.MessageQueue">
+            <summary>
+            Queue to temporarily store received messages with the source IP and Port info. Defaults to size 20. Use constructor or set queue size property before
+            calling initialize. 
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.#ctor(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="key"></param>
+            <param name="address"></param>
+            <param name="port"></param>
+            <param name="bufferSize"></param>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.#ctor(System.String,PepperDash.Core.TcpClientConfigObject)">
+            <summary>
+            Contstructor that sets all properties by calling the initialize method with a config object. 
+            </summary>        
+            <param name="key"></param>
+            <param name="clientConfigObject"></param>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.#ctor">
+            <summary>
+            Default constructor for S+
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.Initialize(System.String)">
+            <summary>
+            Just to help S+ set the key
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.Initialize(PepperDash.Core.TcpClientConfigObject)">
+            <summary>
+            Initialize called by the constructor that accepts a client config object. Can be called later to reset properties of client. 
+            </summary>
+            <param name="config"></param>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.CrestronEnvironment_ProgramStatusEventHandler(Crestron.SimplSharp.eProgramStatusEventType)">
+            <summary>
+            Handles closing this up when the program shuts down
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.Connect">
+            <summary>
+            Connect Method. Will return if already connected. Will write errors if missing address, port, or unique key/name.
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.Disconnect">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.DisconnectClient">
+            <summary>
+            Does the actual disconnect business
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.CheckClosedAndTryReconnect">
+            <summary>
+            Called from Connect failure or Socket Status change if 
+            auto reconnect and socket disconnected (Not disconnected by user)
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.Receive(Crestron.SimplSharp.CrestronSockets.SecureTCPClient,System.Int32)">
+            <summary>
+            Receive callback
+            </summary>
+            <param name="client"></param>
+            <param name="numBytes"></param>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.DequeueEvent">
+            <summary>
+            This method gets spooled up in its own thread an protected by a CCriticalSection to prevent multiple threads from running concurrently.
+            It will dequeue items as they are enqueued automatically.
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.StopWaitForSharedKeyTimer">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.SendText(System.String)">
+            <summary>
+            General send method
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.SendBytes(System.Byte[])">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.Client_SocketStatusChange(Crestron.SimplSharp.CrestronSockets.SecureTCPClient,Crestron.SimplSharp.CrestronSockets.SocketStatus)">
+            <summary>
+            SocketStatusChange Callback 
+            </summary>
+            <param name="client"></param>
+            <param name="clientSocketStatus"></param>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.OnConnectionChange">
+            <summary>
+            Helper for ConnectionChange event
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.GenericSecureTcpIpClient.OnClientReadyForcommunications(System.Boolean)">
+            <summary>
+            Helper to fire ClientReadyForCommunications event
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.StreamDebugging">
+            <summary>
+            Stream debugging 
+            </summary>
+        </member>
+        <member name="E:PepperDash.Core.GenericSecureTcpIpClient.BytesReceived">
+            <summary>
+            Fires when data is received from the server and returns it as a Byte array
+            </summary>
+        </member>
+        <member name="E:PepperDash.Core.GenericSecureTcpIpClient.TextReceived">
+            <summary>
+            Fires when data is received from the server and returns it as text
+            </summary>
+        </member>
+        <member name="E:PepperDash.Core.GenericSecureTcpIpClient.ConnectionChange">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="E:PepperDash.Core.GenericSecureTcpIpClient.AutoReconnectTriggered">
+            <summary>
+            Auto reconnect evant handler
+            </summary>
+        </member>
+        <member name="E:PepperDash.Core.GenericSecureTcpIpClient.TextReceivedQueueInvoke">
+            <summary>
+            Event for Receiving text. Once subscribed to this event the receive callback will start a thread that dequeues the messages and invokes the event on a new thread. 
+            It is not recommended to use both the TextReceived event and the TextReceivedQueueInvoke event. 
+            </summary>
+        </member>
+        <member name="E:PepperDash.Core.GenericSecureTcpIpClient.ClientReadyForCommunications">
+            <summary>
+            For a client with a pre shared key, this will fire after the communication is established and the key exchange is complete. If you require
+            a key and subscribe to the socket change event and try to send data on a connection the data sent will interfere with the key exchange and disconnect.
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.Hostname">
+            <summary>
+            Address of server
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.Port">
+            <summary>
+            Port on server
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.UPort">
+            <summary>
+            S+ helper
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.BufferSize">
+            <summary>
+            Defaults to 2000
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.IsConnected">
+            <summary>
+            Bool showing if socket is connected
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.UIsConnected">
+            <summary>
+            S+ helper for IsConnected
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.ClientStatus">
+            <summary>
+            _client socket status Read only
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.UStatus">
+            <summary>
+            Contains the familiar Simpl analog status values. This drives the ConnectionChange event
+            and IsConnected would be true when this == 2.
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.ClientStatusText">
+            <summary>
+            Status text shows the message associated with socket status
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.ConnectionFailure">
+            <summary>
+            Connection failure reason
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.AutoReconnect">
+            <summary>
+            bool to track if auto reconnect should be set on the socket
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.UAutoReconnect">
+            <summary>
+            S+ helper for AutoReconnect
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.AutoReconnectIntervalMs">
+            <summary>
+            Milliseconds to wait before attempting to reconnect. Defaults to 5000
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.Connected">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.SharedKeyRequired">
+            <summary>
+            Bool to show whether the server requires a preshared key. This is used in the DynamicTCPServer class
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.USharedKeyRequired">
+            <summary>
+            S+ helper for requires shared key bool
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.SharedKey">
+            <summary>
+            SharedKey is sent for varification to the server. Shared key can be any text (255 char limit in SIMPL+ Module), but must match the Shared Key on the Server module
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.WaitingForSharedKeyResponse">
+            <summary>
+            flag to show the client is waiting for the server to send the shared key
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.IsReadyForCommunication">
+            <summary>
+            Bool showing if socket is ready for communication after shared key exchange
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.UIsReadyForCommunication">
+            <summary>
+            S+ helper for IsReadyForCommunication
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.HeartbeatEnabled">
+            <summary>
+            Bool Heartbeat Enabled flag
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.UHeartbeatEnabled">
+            <summary>
+            S+ helper for Heartbeat Enabled
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.HeartbeatString">
+            <summary>
+            Heartbeat String
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.HeartbeatInterval">
+            <summary>
+            Milliseconds before server expects another heartbeat. Set by property HeartbeatRequiredIntervalInSeconds which is driven from S+
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.HeartbeatRequiredIntervalInSeconds">
+            <summary>
+            Simpl+ Heartbeat Analog value in seconds
+            </summary>
+        </member>
+        <member name="P:PepperDash.Core.GenericSecureTcpIpClient.ReceiveQueueSize">
+            <summary>
+            Receive Queue size. Defaults to 20. Will set to 20 if QueueSize property is less than 20. Use constructor or set queue size property before
+            calling initialize. 
+            </summary>
+        </member>
         <member name="T:PepperDash.Core.IBasicCommunicationWithStreamDebugging">
             <summary>
             Represents a device that implements IBasicCommunication and IStreamDebugging
@@ -2398,9 +2748,19 @@
             
             </summary>
         </member>
-        <member name="F:PepperDash.Core.DebugThings.DebugContextCollection.DeviceDebugSettingsLock">
+        <member name="T:PepperDash.Core.DebugThings.DebugContextCollection">
+            <summary>
+            Class to persist current Debug settings across program restarts
+            </summary>
+        </member>
+        <member name="F:PepperDash.Core.DebugThings.DebugContextCollection._deviceDebugSettingsLock">
             <summary>
             To prevent threading issues with the DeviceDebugSettings collection
+            </summary>
+        </member>
+        <member name="M:PepperDash.Core.DebugThings.DebugContextCollection.#ctor">
+            <summary>
+            Default constructor
             </summary>
         </member>
         <!-- Badly formed XML comment ignored for member "M:PepperDash.Core.DebugThings.DebugContextCollection.SetLevel(System.String,System.Int32)" -->
@@ -2429,6 +2789,11 @@
         <member name="P:PepperDash.Core.DebugThings.DebugContextCollection.DeviceDebugSettings">
             <summary>
             Collection of the debug settings for each device where the dictionary key is the device key
+            </summary>
+        </member>
+        <member name="T:PepperDash.Core.DebugThings.DebugContextItem">
+            <summary>
+            Contains information about 
             </summary>
         </member>
         <member name="P:PepperDash.Core.DebugThings.DebugContextItem.Level">
@@ -2895,6 +3260,11 @@
         <member name="T:PepperDash.Core.eStreamDebuggingSetting">
             <summary>
             The available settings for stream debugging
+            </summary>
+        </member>
+        <member name="T:PepperDash.Core.eStreamDebuggingDataTypeSettings">
+            <summary>
+            The available settings for stream debugging response types
             </summary>
         </member>
         <member name="T:PepperDash.Core.JsonToSimpl.JsonToSimplConstants">
