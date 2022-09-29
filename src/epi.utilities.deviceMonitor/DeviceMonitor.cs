@@ -23,11 +23,13 @@ namespace epi.utilities.deviceMonitor
 		public Dictionary<string, MonitoredEssentialsDevice> MonitoredEssentialsDevices = new Dictionary<string, MonitoredEssentialsDevice>();
 		public const long WriteTimeout = 60000;
 		public static CTimer WriteTimer;
+	    private readonly bool _overrideDigitalOutput;
 
         public DeviceMonitor(string key, string name, DeviceConfig dc)
             : base(key, name)
         {
             _props = JsonConvert.DeserializeObject<DeviceMonitorProperties>(dc.Properties.ToString());
+            _overrideDigitalOutput = _props.OverrideDigitalOutputToVisibility;
             Debug.Console(2, this, "Made it to Device Constructor");
 			DevicesWithLogs = new List<IKeyed>(); 
         }
@@ -60,12 +62,15 @@ namespace epi.utilities.deviceMonitor
 
 					    if (commMonitor != null)
                         {
-                            Debug.Console(0, this, "{0} is an iCommunicationMonitor", commMonitor.CommunicationMonitor.Key);
+                            Debug.Console(0, this, "{0} is an iCommunicationMonitor", newDevice.Key);
 
                             var monitoredDevice = new MonitoredEssentialsDevice(item.Value, commMonitor);
+                            Debug.Console(0, this, "{0} has been built as a monitoredessentialsdevice", commMonitor.CommunicationMonitor.Key);
+
 					        MonitoredEssentialsDevices.Add(item.Key, monitoredDevice);
-					        monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
-                            Debug.Console(0, this, "{0} has been built as a MonitoredEssentialsDevice", commMonitor.CommunicationMonitor.Key);
+                            Debug.Console(0, this, "{0} has been Added as a monitoredessentialsdevice", commMonitor.CommunicationMonitor.Key);
+                            monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
+                            Debug.Console(0, this, "{0} has been registered", commMonitor.CommunicationMonitor.Key);
                             continue;
 					    }
 					    var commBasic = newDevice as IBasicCommunication;
@@ -116,16 +121,19 @@ namespace epi.utilities.deviceMonitor
 				}
 			}
 
-			foreach (var key in _props.LogToDeviceKeys)
-			{
-				Debug.Console(2, this, "Looking For Device with Log: {0}", key);
-				var device = DeviceManager.GetDeviceForKey(key);
-			    if (device == null) continue;
-			    Debug.Console(2, this, "Found Device: {0}", key);
-			    DevicesWithLogs.Add(device);
-			}
+		    if (_props.LogToDeviceKeys != null)
+		    {
+		        foreach (var key in _props.LogToDeviceKeys)
+		        {
+		            Debug.Console(2, this, "Looking For Device with Log: {0}", key);
+		            var device = DeviceManager.GetDeviceForKey(key);
+		            if (device == null) continue;
+		            Debug.Console(2, this, "Found Device: {0}", key);
+		            DevicesWithLogs.Add(device);
+		        }
+		    }
 
-            AddPostActivationAction(MakeDeviceErrorString);
+		    AddPostActivationAction(MakeDeviceErrorString);
 
 			return base.CustomActivate();
         }
@@ -203,12 +211,15 @@ namespace epi.utilities.deviceMonitor
 			    if (item.JoinNumber == uint.MaxValue) continue;
 			    Debug.Console(2, this, "Linking Bridge to Simpl Device : {0}", item.Name);
 			    trilist.SetStringSigAction(@join, s => device.StopTimerSerial());
+
 			    trilist.SetBoolSigAction(@join, device.DeviceOnline);
 			    if (trilist.BooleanOutput[@join].BoolValue)
 			    {
 			        device.DeviceOnline(true); 
 			    }
-			    device.IsOnlineFeedback.LinkInputSig(trilist.BooleanInput[@join]);
+			    if (_overrideDigitalOutput) trilist.BooleanInput[@join].BoolValue = !String.IsNullOrEmpty(device.Name);
+			    else device.IsOnlineFeedback.LinkInputSig(trilist.BooleanInput[@join]);
+
 			    device.StatusFeedback.LinkInputSig(trilist.UShortInput[@join]);
 			    device.NameFeedback.LinkInputSig(trilist.StringInput[@join]);
 			}

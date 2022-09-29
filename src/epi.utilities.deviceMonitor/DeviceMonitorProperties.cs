@@ -17,6 +17,8 @@ namespace epi.utilities.deviceMonitor
         public uint DefaultTimeout { get; set; }
         [JsonProperty("essentialsDevicesJoinOffset")]
         public uint EssentialsDevicesJoinOffset { get; set; }
+        [JsonProperty("overrideDigitalOutputToVisibility")]
+        public bool OverrideDigitalOutputToVisibility { get; set; }
 
     }
 
