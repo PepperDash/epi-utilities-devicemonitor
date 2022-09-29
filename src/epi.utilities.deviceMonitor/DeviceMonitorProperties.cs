@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
+using PepperDash.Essentials.Core;
 
 namespace epi.utilities.deviceMonitor
 {
@@ -35,6 +36,8 @@ namespace epi.utilities.deviceMonitor
         public uint ErrorTimeout { get; set; }
         [JsonProperty("deviceKey")]
 		public string DeviceKey { get; set; }
+        [JsonProperty("communicationMonitor")]
+        public CommunicationMonitorConfig CommunicationMonitor { get; set; }
     }
 
 

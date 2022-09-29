@@ -124,6 +124,12 @@ namespace epi.utilities.deviceMonitor
             Name = device.Name;
             JoinNumber = device.JoinNumber;
             Key = "MonitoredSimplDevice--" + Name;
+            if (device.CommunicationMonitor != null)
+            {
+                var monConfig = device.CommunicationMonitor;
+                _warningTimeout = (uint)(monConfig.TimeToWarning > 0 ? monConfig.TimeToWarning : 60);
+                _errorTimeout = (uint)(monConfig.TimeToError > 0 ? monConfig.TimeToError : 180);
+            }
             _warningTimeout = device.WarningTimeout > 0 ? device.WarningTimeout : 60;
             _errorTimeout = device.ErrorTimeout > 0 && device.ErrorTimeout > _warningTimeout ? device.ErrorTimeout : 180;
             UseInRoomHealth = device.LogToDevices;

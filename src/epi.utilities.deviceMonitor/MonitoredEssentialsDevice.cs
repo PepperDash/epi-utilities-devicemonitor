@@ -53,9 +53,8 @@ namespace epi.utilities.deviceMonitor
         public StringFeedback NameFeedback;
         public IntFeedback StatusFeedback;
 
-		public MonitoredEssentialsDevice(DeviceMonitorDevice deviceConfig, Device device, ICommunicationMonitor newStatusMonitorBase)
+		public MonitoredEssentialsDevice(DeviceMonitorDevice deviceConfig, ICommunicationMonitor newStatusMonitorBase)
         {
-		    Device = device;
 		    NameFeedback = new StringFeedback(() => Name);
 			StatusFeedback = new IntFeedback(() => (int)Status);
 			StatusMonitor = newStatusMonitorBase.CommunicationMonitor;

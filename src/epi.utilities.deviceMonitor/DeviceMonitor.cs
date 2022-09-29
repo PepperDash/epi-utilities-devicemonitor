@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Crestron.SimplSharp;
+using Crestron.SimplSharpProInternal;
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Core.Interfaces;
@@ -52,18 +53,54 @@ namespace epi.utilities.deviceMonitor
 
 						if (newDevice == null)
 						{
-							Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device with Key:{0} Does not exists", item.Value.DeviceKey);
+							Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device with Key:{0} Does not exist", item.Value.DeviceKey);
 							continue;
 						}
+					    var commMonitor = newDevice as ICommunicationMonitor;
+
+					    if (commMonitor != null)
+                        {
+                            Debug.Console(0, this, "{0} is an iCommunicationMonitor", commMonitor.CommunicationMonitor.Key);
+
+                            var monitoredDevice = new MonitoredEssentialsDevice(item.Value, commMonitor);
+					        MonitoredEssentialsDevices.Add(item.Key, monitoredDevice);
+					        monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
+                            Debug.Console(0, this, "{0} has been built as a MonitoredEssentialsDevice", commMonitor.CommunicationMonitor.Key);
+                            continue;
+					    }
+					    var commBasic = newDevice as IBasicCommunication;
+                        if (commBasic != null)
+					    {
+                            Debug.Console(0, this, "{0} is an iBasicCommunication", commBasic.Key);
+					        if (item.Value.CommunicationMonitor == null)
+					        {
+					            Debug.Console(0, this, "No Valid CommunicationMonitor for {0}", commBasic.Key);
+					            continue;
+					        }
+
+                            var newDeviceMonitor = new GenericCommunicationMonitor(commBasic, commBasic,
+					            item.Value.CommunicationMonitor);
+                            if (newDeviceMonitor == null)
+                            {
+                                Debug.Console(0, this, "Failed to build CommunicationMonitor for {0}", commBasic.Key);
+                                continue;
+                            }
+                            //DeviceManager.AddDevice(newDeviceMonitor);
+                            var monitoredDevice = new MonitoredEssentialsDevice(item.Value, new OnDemandCommunicationMonitorDevice(newDeviceMonitor));
+					        if (monitoredDevice == null)
+					        {
+                                Debug.Console(0, this, "Failed to build OnDemandCommunicationMonitorDevice for {0}", newDeviceMonitor.Key);
+                                continue;
+
+					        }
+                            MonitoredEssentialsDevices.Add(newDeviceMonitor.Key, monitoredDevice);
+					        monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
+					        continue;
+					    }
+					    Debug.Console(0, Debug.ErrorLogLevel.Error,
+					        "DeviceMonitor -- Device {0} Does not support ICommunicationMonitor", item.Value.DeviceKey);
 
 
-						var newStatusMonitorBase = newDevice as ICommunicationMonitor;
-
-					    if (newStatusMonitorBase == null) continue;
-					    Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device {0} Does not support ICommunicationMonitor", item.Value.DeviceKey);
-					    var monitoredDevice = new MonitoredEssentialsDevice(item.Value, newDevice, newStatusMonitorBase);
-					    MonitoredEssentialsDevices.Add(item.Key, monitoredDevice);
-					    monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
 					}
 					else
 					{

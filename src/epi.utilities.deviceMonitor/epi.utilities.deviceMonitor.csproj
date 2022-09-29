@@ -101,6 +101,7 @@
     <Compile Include="MonitoredEssentialsDevice.cs" />
     <Compile Include="MonitoredSimplDevice.cs" />
     <Compile Include="DeviceMonitorProperties.cs" />
+    <Compile Include="OnDemandCommunicationMonitorDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Properties\ControlSystem.cfg" />
   </ItemGroup>
