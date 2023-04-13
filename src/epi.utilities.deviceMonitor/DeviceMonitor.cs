@@ -206,10 +206,10 @@ namespace epi.utilities.deviceMonitor
 			foreach (var item in MonitoredSimplDevices.Values)
 			{
 				var device = item;
-				var join = joinMap.MultipurposeJoin.JoinNumber + device.JoinNumber;
+				var join = joinMap.MultipurposeJoin.JoinNumber + device.JoinNumber - 1;
 
 			    if (item.JoinNumber == uint.MaxValue) continue;
-			    Debug.Console(2, this, "Linking Bridge to Simpl Device : {0}", item.Name);
+			    Debug.Console(2, this, "Linking Bridge to Simpl Device : {0} join: {1}", item.Name, join);
 			    trilist.SetStringSigAction(@join, s => device.StopTimerSerial());
 
 			    trilist.SetBoolSigAction(@join, device.DeviceOnline);
