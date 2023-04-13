@@ -206,7 +206,7 @@ namespace epi.utilities.deviceMonitor
 			foreach (var item in MonitoredSimplDevices.Values)
 			{
 				var device = item;
-				var join = joinMap.MultipurposeJoin.JoinNumber + device.JoinNumber - 1;
+                var join = joinMap.MultipurposeJoin.JoinNumber + device.JoinNumber - 1;
 
 			    if (item.JoinNumber == uint.MaxValue) continue;
 			    Debug.Console(2, this, "Linking Bridge to Simpl Device : {0} join: {1}", item.Name, join);
@@ -225,9 +225,10 @@ namespace epi.utilities.deviceMonitor
 			}
 			foreach (var item in MonitoredEssentialsDevices.Values)
 			{
-				Debug.Console(2, this, "Linking Bridge to Essentials Device : {0}", item.Name);
+                
 				var device = item;
-				var join = joinMap.MultipurposeJoin.JoinNumber + device.JoinNumber;
+				var join = joinMap.MultipurposeJoin.JoinNumber + device.JoinNumber + 1;
+                Debug.Console(2, this, "Linking Bridge to Essentials Device : {0} join: {1}", item.Name, join);
 
 				device.StatusMonitor.IsOnlineFeedback.LinkInputSig(trilist.BooleanInput[join]);
 				device.StatusFeedback.LinkInputSig(trilist.UShortInput[join]);
