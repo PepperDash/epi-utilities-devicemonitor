@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Crestron.SimplSharp;
@@ -249,6 +249,7 @@ namespace epi.utilities.deviceMonitor
                 device.StatusFeedback.LinkInputSig(trilist.UShortInput[joinData.JoinNumber]);
                 device.NameFeedback.LinkInputSig(trilist.StringInput[joinData.JoinNumber]);
             }
+
 		    trilist.OnlineStatusChange += (d, args) =>
 		    {
 		        if (!args.DeviceOnLine) return;
