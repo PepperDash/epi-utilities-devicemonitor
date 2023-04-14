@@ -227,7 +227,7 @@ namespace epi.utilities.deviceMonitor
 			{
                 
 				var device = item;
-				var join = joinMap.MultipurposeJoin.JoinNumber + device.JoinNumber + 1;
+				var join = joinMap.MultipurposeJoin.JoinNumber + device.JoinNumber - 1;
                 Debug.Console(2, this, "Linking Bridge to Essentials Device : {0} join: {1}", item.Name, join);
 
 				device.StatusMonitor.IsOnlineFeedback.LinkInputSig(trilist.BooleanInput[join]);
