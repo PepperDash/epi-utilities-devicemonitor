@@ -3,7 +3,7 @@ using PepperDash.Essentials.Core;
 
 namespace epi.utilities.deviceMonitor
 {
-    public class MonitoredEssentialsDevice	
+    public class MonitoredEssentialsDevice : IKeyed
     {
         public Device Device { get; set; }
         public StatusMonitorBase StatusMonitor;
@@ -21,6 +21,8 @@ namespace epi.utilities.deviceMonitor
                 NameFeedback.FireUpdate();
             }
         }
+
+        public string Key { get; private set; }
 
         private uint _joinNumber;
         public uint JoinNumber
@@ -53,9 +55,10 @@ namespace epi.utilities.deviceMonitor
         public StringFeedback NameFeedback;
         public IntFeedback StatusFeedback;
 
-		public MonitoredEssentialsDevice(DeviceMonitorDevice deviceConfig, ICommunicationMonitor newStatusMonitorBase)
+		public MonitoredEssentialsDevice(DeviceMonitorDevice deviceConfig, ICommunicationMonitor newStatusMonitorBase, string key)
         {
             Debug.Console(0, "{0} Entered Constructor", deviceConfig.DeviceKey);
+		    Key = key;
 		    NameFeedback = new StringFeedback(() => Name);
 			StatusFeedback = new IntFeedback(() => (int)Status);
 			StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
