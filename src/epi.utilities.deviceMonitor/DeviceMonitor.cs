@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Crestron.SimplSharp;
@@ -64,7 +64,7 @@ namespace epi.utilities.deviceMonitor
                         {
                             Debug.Console(0, this, "{0} is an iCommunicationMonitor", newDevice.Key);
 
-                            var monitoredDevice = new MonitoredEssentialsDevice(item.Value, commMonitor);
+                            var monitoredDevice = new MonitoredEssentialsDevice(item.Value, commMonitor, item.Key);
                             Debug.Console(0, this, "{0} has been built as a monitoredessentialsdevice", commMonitor.CommunicationMonitor.Key);
 
 					        MonitoredEssentialsDevices.Add(item.Key, monitoredDevice);
@@ -91,7 +91,7 @@ namespace epi.utilities.deviceMonitor
                                 continue;
                             }
                             //DeviceManager.AddDevice(newDeviceMonitor);
-                            var monitoredDevice = new MonitoredEssentialsDevice(item.Value, new OnDemandCommunicationMonitorDevice(newDeviceMonitor));
+                            var monitoredDevice = new MonitoredEssentialsDevice(item.Value, new OnDemandCommunicationMonitorDevice(newDeviceMonitor), item.Key);
 					        if (monitoredDevice == null)
 					        {
                                 Debug.Console(0, this, "Failed to build OnDemandCommunicationMonitorDevice for {0}", newDeviceMonitor.Key);
@@ -191,7 +191,7 @@ namespace epi.utilities.deviceMonitor
 
 		public override void LinkToApi(BasicTriList trilist, uint joinStart, string joinMapKey, EiscApiAdvanced bridge)
 		{
-            var joinMap = new DeviceMonitorJoinMapAdvanced(joinStart);
+            var joinMap = new DeviceMonitorJoinMapAdvanced(joinStart, MonitoredSimplDevices, MonitoredEssentialsDevices);
 			var joinMapSerialized = JoinMapHelper.GetJoinMapForDevice(joinMapKey);
 
 			if (!string.IsNullOrEmpty(joinMapSerialized))
@@ -199,41 +199,57 @@ namespace epi.utilities.deviceMonitor
                 joinMap = JsonConvert.DeserializeObject<DeviceMonitorJoinMapAdvanced>(joinMapSerialized);
 			}
 
+            bridge.AddJoinMap(Key, joinMap);
 
 			Debug.Console(1, "Linking to Trilist '{0}'", trilist.ID.ToString("X"));
 			Debug.Console(0, "Linking to DeviceMonitor: {0}", Name);
 			
-			foreach (var item in MonitoredSimplDevices.Values)
-			{
-				var device = item;
-                var join = joinMap.MultipurposeJoin.JoinNumber + device.JoinNumber - 1;
+            foreach (var item in MonitoredSimplDevices.Values)
+            {
+	            var device = item;
 
-			    if (item.JoinNumber == uint.MaxValue) continue;
-			    Debug.Console(2, this, "Linking Bridge to Simpl Device : {0} join: {1}", item.Name, join);
-			    trilist.SetStringSigAction(@join, s => device.StopTimerSerial());
+                //var join = joinMap.Joins[String.Format(String.Format("DeviceMonitor--{0}", device.Key))];
+                JoinDataComplete joinData;
 
-			    trilist.SetBoolSigAction(@join, device.DeviceOnline);
-			    if (trilist.BooleanOutput[@join].BoolValue)
-			    {
-			        device.DeviceOnline(true); 
-			    }
-			    if (_overrideDigitalOutput) trilist.BooleanInput[@join].BoolValue = !String.IsNullOrEmpty(device.Name);
-			    else device.IsOnlineFeedback.LinkInputSig(trilist.BooleanInput[@join]);
+                if (!joinMap.Joins.TryGetValue(String.Format("DeviceMonitor--{0}", device.Key), out joinData))
+                    continue;
+                if (!joinData.Metadata.Description.EndsWith(":: SIMPL"))
+                    continue;
 
-			    device.StatusFeedback.LinkInputSig(trilist.UShortInput[@join]);
-			    device.NameFeedback.LinkInputSig(trilist.StringInput[@join]);
-			}
-			foreach (var item in MonitoredEssentialsDevices.Values)
-			{
-                
-				var device = item;
-				var join = joinMap.MultipurposeJoin.JoinNumber + device.JoinNumber - 1;
-                Debug.Console(2, this, "Linking Bridge to Essentials Device : {0} join: {1}", item.Name, join);
+                Debug.Console(2, this, "Linking Bridge to Simpl Device : {0} join: {1}", item.Name, joinData.JoinNumber);
+                trilist.SetStringSigAction(joinData.JoinNumber, s => device.StopTimerSerial());
 
-				device.StatusMonitor.IsOnlineFeedback.LinkInputSig(trilist.BooleanInput[join]);
-				device.StatusFeedback.LinkInputSig(trilist.UShortInput[join]);
-				device.NameFeedback.LinkInputSig(trilist.StringInput[join]);
-			}
+                trilist.SetBoolSigAction(joinData.JoinNumber, device.DeviceOnline);
+                if (trilist.BooleanOutput[joinData.JoinNumber].BoolValue)
+                {
+                    device.DeviceOnline(true); 
+                }
+                if (_overrideDigitalOutput) trilist.BooleanInput[joinData.JoinNumber].BoolValue = !String.IsNullOrEmpty(device.Name);
+                else device.IsOnlineFeedback.LinkInputSig(trilist.BooleanInput[joinData.JoinNumber]);
+
+                device.StatusFeedback.LinkInputSig(trilist.UShortInput[joinData.JoinNumber]);
+                device.NameFeedback.LinkInputSig(trilist.StringInput[joinData.JoinNumber]);
+            }
+            foreach (var item in MonitoredEssentialsDevices.Values)
+            {
+
+                var device = item;
+
+                //var join = joinMap.Joins[String.Format(String.Format("DeviceMonitor--{0}", device.Key))];
+                JoinDataComplete joinData;
+
+                if (!joinMap.Joins.TryGetValue(String.Format("DeviceMonitor--{0}", device.Key), out joinData))
+                    continue;
+                if (!joinData.Metadata.Description.EndsWith(":: ESSENTIALS"))
+                    continue;
+
+                Debug.Console(2, this, "Linking Bridge to Essentials Device : {0} join: {1}", item.Name, joinData.JoinNumber);
+
+                device.StatusMonitor.IsOnlineFeedback.LinkInputSig(trilist.BooleanInput[joinData.JoinNumber]);
+                device.StatusFeedback.LinkInputSig(trilist.UShortInput[joinData.JoinNumber]);
+                device.NameFeedback.LinkInputSig(trilist.StringInput[joinData.JoinNumber]);
+            }
+
 		    trilist.OnlineStatusChange += (d, args) =>
 		    {
 		        if (!args.DeviceOnLine) return;
