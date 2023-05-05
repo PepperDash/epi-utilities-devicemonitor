@@ -204,19 +204,26 @@ namespace epi.utilities.deviceMonitor
 			Debug.Console(1, "Linking to Trilist '{0}'", trilist.ID.ToString("X"));
 			Debug.Console(0, "Linking to DeviceMonitor: {0}", Name);
 			
-            foreach (var item in MonitoredSimplDevices.Values)
+            foreach (var item in MonitoredSimplDevices)
             {
-	            var device = item;
+                var key = item.Key;
+	            var device = item.Value;
 
                 //var join = joinMap.Joins[String.Format(String.Format("DeviceMonitor--{0}", device.Key))];
                 JoinDataComplete joinData;
 
-                if (!joinMap.Joins.TryGetValue(String.Format("DeviceMonitor--{0}", device.Key), out joinData))
+                if (!joinMap.Joins.TryGetValue(String.Format("DeviceMonitor--{0}", key), out joinData))
+                {
+                    Debug.Console(0, this, "could not get joinmap data for {0}", device.Key);
                     continue;
+                }
                 if (!joinData.Metadata.Description.EndsWith(":: SIMPL"))
+                {
+                    Debug.Console(0, this, "join data did not end with :: SIMPL ", joinData.Metadata.Description);
                     continue;
+                }
 
-                Debug.Console(2, this, "Linking Bridge to Simpl Device : {0} join: {1}", item.Name, joinData.JoinNumber);
+                Debug.Console(0, this, "Linking Bridge to Simpl Device : {0} join: {1}", device.Name, joinData.JoinNumber);
                 trilist.SetStringSigAction(joinData.JoinNumber, s => device.StopTimerSerial());
 
                 trilist.SetBoolSigAction(joinData.JoinNumber, device.DeviceOnline);
