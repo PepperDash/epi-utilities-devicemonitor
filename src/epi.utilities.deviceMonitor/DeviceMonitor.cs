@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Crestron.SimplSharp;
-using Crestron.SimplSharpProInternal;
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
 using PepperDash.Essentials.Core.Interfaces;
@@ -60,23 +59,23 @@ namespace epi.utilities.deviceMonitor
 						}
 					    var commMonitor = newDevice as ICommunicationMonitor;
 
-					    if (commMonitor != null)
+					    if (commMonitor != null && !item.Value.IsCresnet)
                         {
-                            Debug.Console(0, this, "{0} is an iCommunicationMonitor", newDevice.Key);
 
                             var monitoredDevice = new MonitoredEssentialsDevice(item.Value, commMonitor, item.Key);
-                            Debug.Console(0, this, "{0} has been built as a monitoredessentialsdevice", commMonitor.CommunicationMonitor.Key);
+                            if (monitoredDevice == null)
+                            {
+                                Debug.Console(0, this, "Failed to build OnDemandCommunicationMonitorDevice for {0}", commMonitor.CommunicationMonitor.Key);
+                                continue;
 
+                            }
 					        MonitoredEssentialsDevices.Add(item.Key, monitoredDevice);
-                            Debug.Console(0, this, "{0} has been Added as a monitoredessentialsdevice", commMonitor.CommunicationMonitor.Key);
                             monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
-                            Debug.Console(0, this, "{0} has been registered", commMonitor.CommunicationMonitor.Key);
                             continue;
 					    }
 					    var commBasic = newDevice as IBasicCommunication;
-                        if (commBasic != null)
+                        if (commBasic != null && !item.Value.IsCresnet)
 					    {
-                            Debug.Console(0, this, "{0} is an iBasicCommunication", commBasic.Key);
 					        if (item.Value.CommunicationMonitor == null)
 					        {
 					            Debug.Console(0, this, "No Valid CommunicationMonitor for {0}", commBasic.Key);
@@ -102,10 +101,30 @@ namespace epi.utilities.deviceMonitor
 					        monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
 					        continue;
 					    }
+
+					    var commIOnline = newDevice as IOnline;
+					    if (commIOnline != null)
+					    {
+					        var newIOnlineMonitor = new OnDemandIOnlineCommunicationMonitorDevice(newDevice, item.Value.WarningTimeout, item.Value.ErrorTimeout);
+					        if (newIOnlineMonitor == null)
+					        {
+                                Debug.Console(0, this, "Failed to build IOnlineCommunicationMonitor for {0}", newDevice.Key);
+                                continue;
+					        }
+					        var monitoredDevice = new MonitoredEssentialsDevice(item.Value,
+                                newIOnlineMonitor, item.Key);
+                            if (monitoredDevice == null)
+                            {
+                                Debug.Console(0, this, "Failed to build OnDemandCommunicationMonitorDevice for {0}", newIOnlineMonitor.Key);
+                                continue;
+
+                            }
+                            MonitoredEssentialsDevices.Add(newIOnlineMonitor.Key, monitoredDevice);
+                            monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
+                            continue;
+					    }
 					    Debug.Console(0, Debug.ErrorLogLevel.Error,
-					        "DeviceMonitor -- Device {0} Does not support ICommunicationMonitor", item.Value.DeviceKey);
-
-
+                            "DeviceMonitor -- Device {0} Does not support OnDemandIOnlineCommunicationMonitorDevice", item.Value.DeviceKey);
 					}
 					else
 					{
@@ -223,7 +242,7 @@ namespace epi.utilities.deviceMonitor
                     continue;
                 }
 
-                Debug.Console(0, this, "Linking Bridge to Simpl Device : {0} join: {1}", device.Name, joinData.JoinNumber);
+                Debug.Console(2, this, "Linking Bridge to Simpl Device : {0} join: {1}", device.Name, joinData.JoinNumber);
                 trilist.SetStringSigAction(joinData.JoinNumber, s => device.StopTimerSerial());
 
                 trilist.SetBoolSigAction(joinData.JoinNumber, device.DeviceOnline);
@@ -239,16 +258,27 @@ namespace epi.utilities.deviceMonitor
             }
             foreach (var item in MonitoredEssentialsDevices.Values)
             {
-
                 var device = item;
 
                 //var join = joinMap.Joins[String.Format(String.Format("DeviceMonitor--{0}", device.Key))];
                 JoinDataComplete joinData;
 
                 if (!joinMap.Joins.TryGetValue(String.Format("DeviceMonitor--{0}", device.Key), out joinData))
-                    continue;
+                {
+                    if (
+                        !joinMap.Joins.TryGetValue(String.Format("DeviceMonitor--{0}-comMonitor", device.Key),
+                            out joinData))
+                    {
+                        Debug.Console(0, this, "could not get joinmap data for {0}", device.Key);
+                        continue;
+                    }
+                }
                 if (!joinData.Metadata.Description.EndsWith(":: ESSENTIALS"))
+                {
+                    Debug.Console(0, this, "join data did not end with :: ESSENTIALS ", joinData.Metadata.Description);
                     continue;
+
+                }
 
                 Debug.Console(2, this, "Linking Bridge to Essentials Device : {0} join: {1}", item.Name, joinData.JoinNumber);
 

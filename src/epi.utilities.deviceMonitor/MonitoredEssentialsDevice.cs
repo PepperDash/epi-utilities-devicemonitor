@@ -55,42 +55,64 @@ namespace epi.utilities.deviceMonitor
         public StringFeedback NameFeedback;
         public IntFeedback StatusFeedback;
 
-		public MonitoredEssentialsDevice(DeviceMonitorDevice deviceConfig, ICommunicationMonitor newStatusMonitorBase, string key)
+        public MonitoredEssentialsDevice(DeviceMonitorDevice deviceConfig, StatusMonitorBase newStatusMonitorBase, string key)
         {
-            Debug.Console(0, "{0} Entered Constructor", deviceConfig.DeviceKey);
-		    Key = key;
-		    NameFeedback = new StringFeedback(() => Name);
-			StatusFeedback = new IntFeedback(() => (int)Status);
-			StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
-			Name = deviceConfig.Name;
-			JoinNumber = deviceConfig.JoinNumber;
-			UseInRoomHealth = deviceConfig.LogToDevices;
+            Key = key;
+            NameFeedback = new StringFeedback(() => Name);
+            StatusFeedback = new IntFeedback(() => (int)Status);
+            StatusMonitor = newStatusMonitorBase;
+            Name = deviceConfig.Name;
+            JoinNumber = deviceConfig.JoinNumber;
+            UseInRoomHealth = deviceConfig.LogToDevices;
 
-			// StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
+            // StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
             StatusMonitor.StatusChange += StatusMonitor_StatusChange;
-            Debug.Console(0, "{0} Exited Constructor", deviceConfig.DeviceKey);
+            Status = StatusMonitorTranslate(StatusMonitor.Status);
+        }
 
+        public MonitoredEssentialsDevice(DeviceMonitorDevice deviceConfig, ICommunicationMonitor newStatusMonitorBase, string key)
+        {
+            Key = key;
+            NameFeedback = new StringFeedback(() => Name);
+            StatusFeedback = new IntFeedback(() => (int)Status);
+            StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
+            Name = deviceConfig.Name;
+            JoinNumber = deviceConfig.JoinNumber;
+            UseInRoomHealth = deviceConfig.LogToDevices;
 
+            // StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
+            StatusMonitor.StatusChange += StatusMonitor_StatusChange;
         }
 
         void StatusMonitor_StatusChange(object sender, MonitorStatusChangeEventArgs e)
         {
             if (e == null) return;
-            switch (e.Status)
+            Status = StatusMonitorTranslate(e.Status);
+        }
+
+        private DeviceStatus StatusMonitorTranslate(MonitorStatus status)
+        {
+            DeviceStatus localStatus;
+            switch (status)
             {
                 case MonitorStatus.InError:
-                    Status = DeviceStatus.Error;
+                    localStatus = DeviceStatus.Error;
                     break;
                 case MonitorStatus.InWarning:
-                    Status = DeviceStatus.Warning;
+                    localStatus = DeviceStatus.Warning;
                     break;
                 case MonitorStatus.IsOk:
-                    Status = DeviceStatus.Ok;
+                    localStatus = DeviceStatus.Ok;
                     break;
                 case MonitorStatus.StatusUnknown:
-                    Status = DeviceStatus.Unknown;
+                    localStatus = DeviceStatus.Unknown;
+                    break;
+                default:
+                    localStatus = DeviceStatus.Unknown;
                     break;
             }
+            return localStatus;
+
         }
     }
 }

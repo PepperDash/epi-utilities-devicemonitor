@@ -36,6 +36,8 @@ namespace epi.utilities.deviceMonitor
         public uint WarningTimeout { get; set; }
         [JsonProperty("errorTimeout")]
         public uint ErrorTimeout { get; set; }
+        [JsonProperty("isCresnet")]
+        public bool IsCresnet { get; set; }
         [JsonProperty("deviceKey")]
 		public string DeviceKey { get; set; }
         [JsonProperty("communicationMonitor")]

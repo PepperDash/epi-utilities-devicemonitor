@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Generic;
-using Crestron.SimplSharpPro;
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
 
@@ -22,7 +20,7 @@ namespace epi.utilities.deviceMonitor
                 var key = device.Key;
                 var name = String.Format("DeviceMonitor--{0}", key);
 
-                var joinData = new JoinData()
+                var joinData = new JoinData
                 {
                     JoinNumber = item.JoinNumber + joinStart - 1,
                     JoinSpan = 1
@@ -43,7 +41,7 @@ namespace epi.utilities.deviceMonitor
                 var key = device.Key;
                 var name = String.Format("DeviceMonitor--{0}", key);
 
-                var joinData = new JoinData()
+                var joinData = new JoinData
                 {
                     JoinNumber = item.JoinNumber + joinStart - 1,
                     JoinSpan = 1
