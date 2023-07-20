@@ -82,6 +82,7 @@ namespace epi.utilities.deviceMonitor
 
             // StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
             StatusMonitor.StatusChange += StatusMonitor_StatusChange;
+            Status = StatusMonitorTranslate(StatusMonitor.Status);
         }
 
         void StatusMonitor_StatusChange(object sender, MonitorStatusChangeEventArgs e)
@@ -90,7 +91,7 @@ namespace epi.utilities.deviceMonitor
             Status = StatusMonitorTranslate(e.Status);
         }
 
-        private DeviceStatus StatusMonitorTranslate(MonitorStatus status)
+        private static DeviceStatus StatusMonitorTranslate(MonitorStatus status)
         {
             DeviceStatus localStatus;
             switch (status)

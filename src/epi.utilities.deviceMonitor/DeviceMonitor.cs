@@ -281,10 +281,12 @@ namespace epi.utilities.deviceMonitor
                 }
 
                 Debug.Console(2, this, "Linking Bridge to Essentials Device : {0} join: {1}", item.Name, joinData.JoinNumber);
-
                 device.StatusMonitor.IsOnlineFeedback.LinkInputSig(trilist.BooleanInput[joinData.JoinNumber]);
                 device.StatusFeedback.LinkInputSig(trilist.UShortInput[joinData.JoinNumber]);
                 device.NameFeedback.LinkInputSig(trilist.StringInput[joinData.JoinNumber]);
+                device.StatusMonitor.IsOnlineFeedback.FireUpdate();
+                device.StatusFeedback.FireUpdate();
+                device.NameFeedback.FireUpdate();
             }
 
 		    trilist.OnlineStatusChange += (d, args) =>
