@@ -3,7 +3,7 @@ using PepperDash.Essentials.Core;
 
 namespace epi.utilities.deviceMonitor
 {
-    public class MonitoredEssentialsDevice : IKeyed
+    public class MonitoredEssentialsDevice : IKeyed, IOnline
     {
         public Device Device { get; set; }
         public StatusMonitorBase StatusMonitor;
@@ -48,12 +48,15 @@ namespace epi.utilities.deviceMonitor
             {
                 _status = value;
                 StatusFeedback.FireUpdate();
+                IsOnline.FireUpdate();
             }
         }
         public bool UseInRoomHealth { get; private set; }
 
         public StringFeedback NameFeedback;
         public IntFeedback StatusFeedback;
+        public BoolFeedback IsOnline { get; private set; }
+
 
         public MonitoredEssentialsDevice(DeviceMonitorDevice deviceConfig, StatusMonitorBase newStatusMonitorBase, string key)
         {
@@ -68,6 +71,7 @@ namespace epi.utilities.deviceMonitor
             // StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
             StatusMonitor.StatusChange += StatusMonitor_StatusChange;
             Status = StatusMonitorTranslate(StatusMonitor.Status);
+            IsOnline = new BoolFeedback(() => Status == DeviceStatus.Ok);
         }
 
         public MonitoredEssentialsDevice(DeviceMonitorDevice deviceConfig, ICommunicationMonitor newStatusMonitorBase, string key)
@@ -83,6 +87,7 @@ namespace epi.utilities.deviceMonitor
             // StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
             StatusMonitor.StatusChange += StatusMonitor_StatusChange;
             Status = StatusMonitorTranslate(StatusMonitor.Status);
+            IsOnline = new BoolFeedback(() => Status == DeviceStatus.Ok);
         }
 
         void StatusMonitor_StatusChange(object sender, MonitorStatusChangeEventArgs e)
@@ -115,5 +120,10 @@ namespace epi.utilities.deviceMonitor
             return localStatus;
 
         }
+
+        #region IOnline Members
+
+
+        #endregion
     }
 }

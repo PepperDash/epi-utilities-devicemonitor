@@ -12,13 +12,16 @@ namespace epi.utilities.deviceMonitor
 		public List<string> LogToDeviceKeys;
         [JsonProperty("devices")]
         public Dictionary<string, DeviceMonitorDevice> Devices { get; set; }
-
+        [JsonProperty("aggregateDevices")]
+        public Dictionary<string, DeviceMonitorAggregate> AggregateDevices { get; set; }
         [JsonProperty("defaultTimeout")]
         public uint DefaultTimeout { get; set; }
         [JsonProperty("essentialsDevicesJoinOffset")]
         public uint EssentialsDevicesJoinOffset { get; set; }
         [JsonProperty("overrideDigitalOutputToVisibility")]
         public bool OverrideDigitalOutputToVisibility { get; set; }
+        [JsonProperty("addMonitorsToDeviceManager")]
+        public bool AddMonitorsToDeviceManager { get; set; }
 
     }
 
@@ -42,6 +45,17 @@ namespace epi.utilities.deviceMonitor
 		public string DeviceKey { get; set; }
         [JsonProperty("communicationMonitor")]
         public CommunicationMonitorConfig CommunicationMonitor { get; set; }
+    }
+
+    public class DeviceMonitorAggregate
+    {
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("devices")]
+        public List<string> Devices { get; set; }
+        [JsonProperty("joinNumber")]
+        public uint JoinNumber { get; set; }
+ 
     }
 
 

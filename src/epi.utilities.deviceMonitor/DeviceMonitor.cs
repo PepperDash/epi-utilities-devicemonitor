@@ -13,13 +13,15 @@ using Crestron.SimplSharpPro.DeviceSupport;
 namespace epi.utilities.deviceMonitor
 {
 	public class DeviceMonitor : EssentialsBridgeableDevice
-    {
-
+	{
+	    private readonly bool _addMonitorsToDeviceManager;
         public event EventHandler<ErrorArgs> ErrorEvent;
         private readonly DeviceMonitorProperties _props;
 		public List<IKeyed> DevicesWithLogs;
 		public Dictionary<string, MonitoredSimplDevice> MonitoredSimplDevices = new Dictionary<string, MonitoredSimplDevice>();
 		public Dictionary<string, MonitoredEssentialsDevice> MonitoredEssentialsDevices = new Dictionary<string, MonitoredEssentialsDevice>();
+        public Dictionary<string, IOnline> AllMonitoredDevices = new Dictionary<string, IOnline>();
+        public Dictionary<string, AggregateDevice> AggregateDevices = new Dictionary<string, AggregateDevice>(); 
 		public const long WriteTimeout = 60000;
 		public static CTimer WriteTimer;
 	    private readonly bool _overrideDigitalOutput;
@@ -29,8 +31,22 @@ namespace epi.utilities.deviceMonitor
         {
             _props = JsonConvert.DeserializeObject<DeviceMonitorProperties>(dc.Properties.ToString());
             _overrideDigitalOutput = _props.OverrideDigitalOutputToVisibility;
+            _addMonitorsToDeviceManager = _props.AddMonitorsToDeviceManager;
             Debug.Console(2, this, "Made it to Device Constructor");
-			DevicesWithLogs = new List<IKeyed>(); 
+			DevicesWithLogs = new List<IKeyed>();
+            foreach (var item in _props.AggregateDevices)
+            {
+                var aggregateDevice = new AggregateDevice(item.Key, item.Value.Name, item.Value.Devices,
+                    item.Value.JoinNumber, this);
+                AggregateDevices.Add(Key + "-" + item.Key + "-Aggregate", aggregateDevice);
+                DeviceManager.AddDevice(aggregateDevice);
+            }
+            if (!_addMonitorsToDeviceManager) return;
+            foreach (var item in _props.Devices)
+            {
+                DeviceManager.AddDevice(new DeviceManagerMonitor(item.Key + "-DeviceManager", item.Value.Name));
+            }
+
         }
 
         void StatusMonitor_StatusChange(object sender, EventArgs e)
@@ -47,6 +63,7 @@ namespace epi.utilities.deviceMonitor
 			{
 				try
 				{
+				    var deviceManagerMonitor = DeviceManager.GetDeviceForKey(item.Key + "-DeviceManager") as DeviceManagerMonitor;
 					if (item.Value.DeviceKey != null)
 					{
 						Debug.Console(2, this, "Creating Essentials Device : {0}", item.Value.DeviceKey);
@@ -71,6 +88,7 @@ namespace epi.utilities.deviceMonitor
                             }
 					        MonitoredEssentialsDevices.Add(item.Key, monitoredDevice);
                             monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
+                            if(deviceManagerMonitor != null) deviceManagerMonitor.LinkIOnline(monitoredDevice);
                             continue;
 					    }
 					    var commBasic = newDevice as IBasicCommunication;
@@ -99,6 +117,7 @@ namespace epi.utilities.deviceMonitor
 					        }
                             MonitoredEssentialsDevices.Add(newDeviceMonitor.Key, monitoredDevice);
 					        monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
+                            if (deviceManagerMonitor != null) deviceManagerMonitor.LinkIOnline(monitoredDevice);
 					        continue;
 					    }
 
@@ -121,6 +140,7 @@ namespace epi.utilities.deviceMonitor
                             }
                             MonitoredEssentialsDevices.Add(newIOnlineMonitor.Key, monitoredDevice);
                             monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
+                            if (deviceManagerMonitor != null) deviceManagerMonitor.LinkIOnline(monitoredDevice);
                             continue;
 					    }
 					    Debug.Console(0, Debug.ErrorLogLevel.Error,
@@ -129,9 +149,10 @@ namespace epi.utilities.deviceMonitor
 					else
 					{
 						Debug.Console(2, this, "Creating Simpl Device : {0}", item.Value.Name);
-						var monitoredDevice = new MonitoredSimplDevice(item.Value);
+						var monitoredDevice = new MonitoredSimplDevice(item.Key, item.Value);
 						MonitoredSimplDevices.Add(item.Key, monitoredDevice);
-						monitoredDevice.StatusChangeEvent += StatusMonitor_StatusChange;
+                        if (deviceManagerMonitor != null) deviceManagerMonitor.LinkIOnline(monitoredDevice);
+                        monitoredDevice.StatusChangeEvent += StatusMonitor_StatusChange;
 					}
 				}
 				catch (Exception ex)
@@ -139,6 +160,19 @@ namespace epi.utilities.deviceMonitor
 					Debug.Console(0, Debug.ErrorLogLevel.Error, "DeviceMonitor -- Device {0} Does not support ICommunicationMonitor {1}", item.Value.DeviceKey, ex);
 				}
 			}
+
+            foreach (var kvp in MonitoredEssentialsDevices)
+            {
+                AllMonitoredDevices.Add(kvp.Key, kvp.Value);
+            }
+
+            foreach (var kvp in MonitoredSimplDevices)
+            {
+                AllMonitoredDevices.Add(kvp.Key, kvp.Value);
+            }
+
+		    LinkAggregates();
+
 
 		    if (_props.LogToDeviceKeys != null)
 		    {
@@ -167,6 +201,15 @@ namespace epi.utilities.deviceMonitor
 
             Debug.Console(1, this, "Log timer has been reset.");
         }
+
+	    private void LinkAggregates()
+	    {
+	        foreach (var item in AggregateDevices)
+	        {
+	            var device = item;
+                device.Value.LinkToDevices();
+	        }
+	    }
 
 
 		private void WriteLog(object o)
@@ -251,7 +294,7 @@ namespace epi.utilities.deviceMonitor
                     device.DeviceOnline(true); 
                 }
                 if (_overrideDigitalOutput) trilist.BooleanInput[joinData.JoinNumber].BoolValue = !String.IsNullOrEmpty(device.Name);
-                else device.IsOnlineFeedback.LinkInputSig(trilist.BooleanInput[joinData.JoinNumber]);
+                else device.IsOnline.LinkInputSig(trilist.BooleanInput[joinData.JoinNumber]);
 
                 device.StatusFeedback.LinkInputSig(trilist.UShortInput[joinData.JoinNumber]);
                 device.NameFeedback.LinkInputSig(trilist.StringInput[joinData.JoinNumber]);
@@ -288,14 +331,13 @@ namespace epi.utilities.deviceMonitor
                 device.StatusFeedback.FireUpdate();
                 device.NameFeedback.FireUpdate();
             }
-
-		    trilist.OnlineStatusChange += (d, args) =>
+	        trilist.OnlineStatusChange += (d, args) =>
 		    {
 		        if (!args.DeviceOnLine) return;
 		        foreach (var device in MonitoredSimplDevices.Values)
 		        {
 
-		            device.IsOnlineFeedback.FireUpdate();
+		            device.IsOnline.FireUpdate();
 		            device.StatusFeedback.FireUpdate();
 		            device.NameFeedback.FireUpdate();
 		        }

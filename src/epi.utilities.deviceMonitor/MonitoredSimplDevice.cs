@@ -6,7 +6,7 @@ using PepperDash.Core;
 
 namespace epi.utilities.deviceMonitor
 {
-    public class MonitoredSimplDevice : IKeyed
+    public class MonitoredSimplDevice : IKeyed, IOnline
     {
 		
         public CTimer Timer = null;
@@ -33,24 +33,26 @@ namespace epi.utilities.deviceMonitor
             set
             {
                 _status = value;
-                IsOnline = value == DeviceStatus.Ok;
+                Online = value == DeviceStatus.Ok;
                 StatusFeedback.FireUpdate();
             }
         }
         public event EventHandler<EventArgs> StatusChangeEvent;
-        private bool _isOnline;
-        public bool IsOnline
+        private bool _online;
+        public bool Online
         {
             get
             {
-                return _isOnline;
+                return _online;
             }
             set
             {
-                _isOnline = value;
-                IsOnlineFeedback.FireUpdate();
+                _online = value;
+                IsOnline.FireUpdate();
             }
         }
+
+
         private readonly uint _warningTimeout;
         private long WarningTimerTimeout
         {
@@ -84,7 +86,7 @@ namespace epi.utilities.deviceMonitor
 
         public IntFeedback StatusFeedback;
         public StringFeedback NameFeedback;
-        public BoolFeedback IsOnlineFeedback;
+        public BoolFeedback IsOnline { get; private set; }
 
 
         public bool UseInRoomHealth { get; set; }
@@ -97,15 +99,15 @@ namespace epi.utilities.deviceMonitor
         /// <param name="warningTimeout">time in seconds before device enters warning status</param>
         /// <param name="errorTimeout">time in seconds before device enters error status</param>
         /// <param name="useInRoomHealth">show in overall room health metrics</param>
-        public MonitoredSimplDevice(string name, uint joinNumber, uint warningTimeout, uint errorTimeout, bool useInRoomHealth)
+        public MonitoredSimplDevice(string key, string name, uint joinNumber, uint warningTimeout, uint errorTimeout, bool useInRoomHealth)
         {
 			
             StatusFeedback = new IntFeedback(() => (int)Status);
             NameFeedback = new StringFeedback(() => Name);
-            IsOnlineFeedback = new BoolFeedback(() => IsOnline);
+            IsOnline = new BoolFeedback(() => Online);
             Name = name;
             JoinNumber = joinNumber;
-            Key = "MonitoredSimplDevice--" + Name;
+            Key = key;
             _warningTimeout = warningTimeout > 0 ? warningTimeout : 60;
             _errorTimeout = errorTimeout > 0 && errorTimeout > _warningTimeout ? errorTimeout : 180;
             UseInRoomHealth = useInRoomHealth;
@@ -116,14 +118,14 @@ namespace epi.utilities.deviceMonitor
         /// Builds a new MonitoredSimplDevice
         /// </summary>
         /// <param name="device">Full Object from Json</param>
-        public MonitoredSimplDevice(DeviceMonitorDevice device)
+        public MonitoredSimplDevice(string key, DeviceMonitorDevice device)
         {
             StatusFeedback = new IntFeedback(() => (int)Status);
             NameFeedback = new StringFeedback(() => Name);
-            IsOnlineFeedback = new BoolFeedback(() => IsOnline);
+            IsOnline = new BoolFeedback(() => Online);
             Name = device.Name;
             JoinNumber = device.JoinNumber;
-            Key = "MonitoredSimplDevice--" + Name;
+            Key = key;
             if (device.CommunicationMonitor != null)
             {
                 var monConfig = device.CommunicationMonitor;
@@ -144,7 +146,7 @@ namespace epi.utilities.deviceMonitor
         {
             try
             {
-				IsOnline = online;
+				Online = online;
                 if (online)
                 {
                     StopTimer();
