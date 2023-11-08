@@ -70,13 +70,12 @@ namespace epi.utilities.deviceMonitor
             StatusMonitor.StatusChange += StatusMonitor_StatusChange;
             Debug.Console(0, "{0} Exited Constructor", deviceConfig.DeviceKey);
 
-
+	    TranslateStatus(newStatusMonitorBase.CommunicationMonitor.Status);
         }
 
-        void StatusMonitor_StatusChange(object sender, MonitorStatusChangeEventArgs e)
-        {
-            if (e == null) return;
-            switch (e.Status)
+ 	void TranslateStatus(MonitorStatus status)
+	  {
+	    switch (status)
             {
                 case MonitorStatus.InError:
                     Status = DeviceStatus.Error;
@@ -91,6 +90,13 @@ namespace epi.utilities.deviceMonitor
                     Status = DeviceStatus.Unknown;
                     break;
             }
+	  }
+
+        void StatusMonitor_StatusChange(object sender, MonitorStatusChangeEventArgs e)
+        {
+            if (e == null) return;
+
+		TranslateStatus(e.Status);
         }
     }
 }
