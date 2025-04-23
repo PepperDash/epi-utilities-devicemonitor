@@ -31,15 +31,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <None Remove="epi-make-model.projectinfo" />
+    <None Remove="epi-utilities-deviceMonitor.projectinfo" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="../output\epi-make-model.4Series.1.0.0-local.cplz" />
+    <None Remove="../output\epi-utilities-deviceMonitor.4Series.1.0.0-local.cplz" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="../output\epi-make-model.4Series.1.0.0-local.cplz" />
+    <None Remove="../output\epi-utilities-deviceMonitor.4Series.1.0.0-local.cplz" />
   </ItemGroup>
 
   <ItemGroup>
