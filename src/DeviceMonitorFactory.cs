@@ -19,8 +19,8 @@ namespace epi.utilities.deviceMonitor
 
         // Builds and returns an instance of EssentialsPluginDeviceTemplate
         public override EssentialsDevice BuildDevice(DeviceConfig dc)
-        {
-            Debug.Console(1, "Factory Attempting to create new device from type: {0}", dc.Type);
+        {            
+            Debug.LogDebug("Factory Attempting to create new device from type: {0}", dc.Type);
 
             return new DeviceMonitor(dc.Key, dc.Name, dc);
         }

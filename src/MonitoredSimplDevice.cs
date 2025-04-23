@@ -3,12 +3,10 @@ using Crestron.SimplSharp;
 using PepperDash.Essentials.Core;
 using PepperDash.Core;
 
-
 namespace epi.utilities.deviceMonitor
 {
     public class MonitoredSimplDevice : IKeyed
-    {
-		
+    {		
         public CTimer Timer = null;
         private string _name;
         public string Name
@@ -148,17 +146,17 @@ namespace epi.utilities.deviceMonitor
                 if (online)
                 {
                     StopTimer();
-                    Debug.Console(1, this, "Device Online");
+                    Debug.LogDebug(this, "Device Online");
                 }
                 else
                 {
                     StartTimer();
-                    Debug.Console(1, this, "Device Offline");
+                    Debug.LogDebug(this, "Device Offline");
                 }
             }
             catch (Exception ex)
             {
-                Debug.Console(0, this, "Exception - {0}", ex.Message);
+                Debug.LogVerbose(this, "Exception - {0}", ex.Message);
             }
         }
 
@@ -176,7 +174,7 @@ namespace epi.utilities.deviceMonitor
             }
             catch (Exception ex)
             {
-                Debug.Console(0, this, "Exception - {0}", ex.Message);
+                Debug.LogVerbose(this, "Exception - {0}", ex.Message);
             }
 
         }
@@ -213,14 +211,14 @@ namespace epi.utilities.deviceMonitor
             {
                 ChangeStatus(DeviceStatus.Error);
             }
-            Debug.Console(2, this, "{0} Timer Expired", Status == DeviceStatus.Warning ? "Warning" : "Error" );
+            Debug.LogInformation(this, "{0} Timer Expired", Status == DeviceStatus.Warning ? "Warning" : "Error" );
         }
 
         private void ChangeStatus(DeviceStatus status)
         {
             try
             {
-                Debug.Console(1, this, "ChangeStatus - {0}",  (int)status);
+                Debug.LogDebug(this, "ChangeStatus - {0}",  (int)status);
 
                 if (Status == status || JoinNumber == int.MaxValue) return;
                 Status = status;
@@ -234,7 +232,7 @@ namespace epi.utilities.deviceMonitor
             }
             catch (Exception ex)
             {
-                Debug.Console(0, this, "Exception - {0}", ex.Message);
+                Debug.LogVerbose(this, "Exception - {0}", ex.Message);
             }
         }
 
@@ -243,10 +241,5 @@ namespace epi.utilities.deviceMonitor
         public string Key { get; set; }
 
         #endregion
-
-
-
-
-
 	}
 }

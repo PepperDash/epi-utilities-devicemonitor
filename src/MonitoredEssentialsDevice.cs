@@ -55,27 +55,25 @@ namespace epi.utilities.deviceMonitor
         public StringFeedback NameFeedback;
         public IntFeedback StatusFeedback;
 
-		public MonitoredEssentialsDevice(DeviceMonitorDevice deviceConfig, ICommunicationMonitor newStatusMonitorBase, string key)
+        public MonitoredEssentialsDevice(DeviceMonitorDevice deviceConfig, ICommunicationMonitor newStatusMonitorBase, string key)
         {
-            Debug.Console(0, "{0} Entered Constructor", deviceConfig.DeviceKey);
-		    Key = key;
-		    NameFeedback = new StringFeedback(() => Name);
-			StatusFeedback = new IntFeedback(() => (int)Status);
-			StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
-			Name = deviceConfig.Name;
-			JoinNumber = deviceConfig.JoinNumber;
-			UseInRoomHealth = deviceConfig.LogToDevices;
-
-			// StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
+            Debug.LogVerbose("{0} Entered Constructor", deviceConfig.DeviceKey);
+            Key = key;
+            NameFeedback = new StringFeedback(() => Name);
+            StatusFeedback = new IntFeedback(() => (int)Status);
+            StatusMonitor = newStatusMonitorBase.CommunicationMonitor;
+            Name = deviceConfig.Name;
+            JoinNumber = deviceConfig.JoinNumber;
+            UseInRoomHealth = deviceConfig.LogToDevices;
             StatusMonitor.StatusChange += StatusMonitor_StatusChange;
-            Debug.Console(0, "{0} Exited Constructor", deviceConfig.DeviceKey);
+            Debug.LogVerbose("{0} Exited Constructor", deviceConfig.DeviceKey);
 
-	    TranslateStatus(newStatusMonitorBase.CommunicationMonitor.Status);
+            TranslateStatus(newStatusMonitorBase.CommunicationMonitor.Status);
         }
 
- 	void TranslateStatus(MonitorStatus status)
-	  {
-	    switch (status)
+        void TranslateStatus(MonitorStatus status)
+        {
+            switch (status)
             {
                 case MonitorStatus.InError:
                     Status = DeviceStatus.Error;
@@ -90,13 +88,13 @@ namespace epi.utilities.deviceMonitor
                     Status = DeviceStatus.Unknown;
                     break;
             }
-	  }
+        }
 
         void StatusMonitor_StatusChange(object sender, MonitorStatusChangeEventArgs e)
         {
             if (e == null) return;
 
-		TranslateStatus(e.Status);
+            TranslateStatus(e.Status);
         }
     }
 }

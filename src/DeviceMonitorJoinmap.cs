@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Generic;
-using Crestron.SimplSharpPro;
-using PepperDash.Core;
 using PepperDash.Essentials.Core;
-
 
 namespace epi.utilities.deviceMonitor
 {
-
     public class DeviceMonitorJoinMapAdvanced : JoinMapBaseAdvanced
     {
         public DeviceMonitorJoinMapAdvanced(uint joinStart, Dictionary<string, MonitoredSimplDevice> simplDevices, Dictionary<string, MonitoredEssentialsDevice> essentialsDevices)
