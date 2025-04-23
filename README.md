@@ -1,12 +1,13 @@
-# epi-utilities-devicemonitor
-Device Monitor Class - For use with and without Dynfusion
+![PepperDash Essentials Plugin](./images/essentials-plugin-blue.png)
 
+# PepperDash Utilities Device Monitor
 
+> Device Monitor Class - For use with or without Dynfusion
 
 ``` json
 
 {
-    "key" : "DevMon-1",
+    "key" : "devMon",
     "name" : "Device Monitor",
     "group" : "api",
     "type" : "devicemonitor",
@@ -37,6 +38,15 @@ Device Monitor Class - For use with and without Dynfusion
                 "joinNumber": 3
             }
         }
+    }
+},
+{
+    "key": "devmon-bridge",
+    "type": "eiscApiAdvanced",
+    "group": "api",
+    "properties": {
+        "control": { "ipid": "d0", "method": "ipidTcp", "tcpSshProperties": { "address": "127.0.0.2", "port": 0 } },
+        "devices": [ { "deviceKey": "devMon", "joinStart": 1 } ]
     }
 }
 
