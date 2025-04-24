@@ -16,22 +16,16 @@
                             "name": "Test 1-SIMPL Device",
                             "warningTimeout": 60,
                             "errorTimeout": 180,
-                            "monitorType": "Digital",
                             "logToProcessor": true,
                             "logToDevices": true,
                             "joinNumber": 1
                         },
                         "device02": {
                             "name": "Test 2-Essentials Device",
+                            "deviceKey" : "display01",
                             "logToProcessor": true,
                             "logToDevices": true,
                             "joinNumber": 2
-                        },
-                        "device03": {
-                            "name": "Test 3-Essentials Device",
-                            "logToProcessor": true,
-                            "logToDevices": true,
-                            "joinNumber": 3
                         }
                     }
                 }

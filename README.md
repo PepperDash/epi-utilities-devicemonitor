@@ -19,7 +19,7 @@
         ],
         "Devices" : 
         {
-            "Device1": // Key can be any string
+            "SimplWindowsDevice1": // Key can be any string
             {
                 "name" : "Test 1", // Name that will be used in log and on the bridge 
                 "warningTimeout" : 60, // Timeout until warning, Required for Simpl devices only
