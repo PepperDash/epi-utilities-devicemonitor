@@ -51,3 +51,49 @@
 }
 
 '''
+<!-- START Minimum Essentials Framework Versions -->
+### Minimum Essentials Framework Versions
+
+- 2.4.4
+<!-- END Minimum Essentials Framework Versions -->
+<!-- START Supported Types -->
+
+<!-- END Supported Types -->
+<!-- START Join Maps -->
+
+<!-- END Join Maps -->
+<!-- START Interfaces Implemented -->
+### Interfaces Implemented
+
+- ICommunicationMonitor
+- IKeyed
+<!-- END Interfaces Implemented -->
+<!-- START Base Classes -->
+### Base Classes
+
+- JoinMapBaseAdvanced
+- EssentialsBridgeableDevice
+<!-- END Base Classes -->
+<!-- START Public Methods -->
+### Public Methods
+
+- public void DeviceOnline(bool online)
+- public void StopTimerSerial()
+<!-- END Public Methods -->
+<!-- START Bool Feedbacks -->
+### Bool Feedbacks
+
+- IsOnlineFeedback
+<!-- END Bool Feedbacks -->
+<!-- START Int Feedbacks -->
+### Int Feedbacks
+
+- StatusFeedback
+- StatusFeedback
+<!-- END Int Feedbacks -->
+<!-- START String Feedbacks -->
+### String Feedbacks
+
+- NameFeedback
+- NameFeedback
+<!-- END String Feedbacks -->
