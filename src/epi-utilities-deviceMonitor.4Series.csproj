@@ -8,7 +8,7 @@
 		<Deterministic>false</Deterministic>
 		<AssemblyTitle>EPI.Utilities.DeviceMonitor</AssemblyTitle>
 		<Company>PepperDash Technologies</Company>
-		<Description>PepperDash Essentials Plugin to Monitor Devices.</Description>
+		<Description>PepperDash Essentials Plugin to Monitor Devices</Description>
 		<Copyright>Copyright 2025</Copyright>
 		<Version>1.0.0-local</Version>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
