@@ -14,7 +14,6 @@ namespace epi.utilities.deviceMonitor
 {
 	public class DeviceMonitor : EssentialsBridgeableDevice
     {
-
         public event EventHandler<ErrorArgs> ErrorEvent;
         private readonly DeviceMonitorProperties _props;
 		public List<IKeyed> DevicesWithLogs;
@@ -63,10 +62,10 @@ namespace epi.utilities.deviceMonitor
                             Debug.LogVerbose(this, "{0} is an iCommunicationMonitor", newDevice.Key);
 
                             var monitoredDevice = new MonitoredEssentialsDevice(item.Value, commMonitor, item.Key);
-                            Debug.LogVerbose(this, "{0} has been built as a monitoredessentialsdevice", commMonitor.CommunicationMonitor.Key);
+                            Debug.LogVerbose(this, "{0} has been built as a monitoredEssentialsDevice", commMonitor.CommunicationMonitor.Key);
 
 					        MonitoredEssentialsDevices.Add(item.Key, monitoredDevice);
-                            Debug.LogVerbose(this, "{0} has been Added as a monitoredessentialsdevice", commMonitor.CommunicationMonitor.Key);
+                            Debug.LogVerbose(this, "{0} has been Added as a monitoredEssentialsDevice", commMonitor.CommunicationMonitor.Key);
                             monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
                             Debug.LogVerbose(this, "{0} has been registered", commMonitor.CommunicationMonitor.Key);
                             continue;

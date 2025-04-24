@@ -1,85 +1,67 @@
 {
-    "system": {},
-    "system_url": "http://portal-QA.devcloud.pepperdash.com/templates/0f50640b-bc89-42d5-998f-81d137d3fc98#/template_summary",
+    "system": {
+        "info": {}
+    },
     "template": {
         "devices": [
             {
-                "key": "processor",
-                "uid": 0,
-                "type": "rmc3",
-                "name": "rmc3",
-                "group": "processor",
-                "supportedConfigModes": [
-                    "compliance",
-                    "essentials"
-                ],
-                "supportedSystemTypes": [
-                    "hudType",
-                    "presType",
-                    "vtcType",
-                    "custom"
-                ],
-                "supportsCompliance": true,
-                "properties": {}
-            },
-            {
-                "key" : "DevMon-1",
-                "name" : "Device Monitor",
-                "group" : "api",
-                "type" : "devicemonitor",
-                "properties" : {
-                    "SimplDevices" : [
-                        {
-                            "name" : "Test 1",
-                            "joinNumber" : 1,
-                            "useInRoomHealth" : true,
-                            "warningTimeout" : 60,
-                            "errorTimeout" : 180,
-                            "monitorType" : "Digital"
+                "key": "DevMon-1",
+                "name": "Device Monitor",
+                "group": "api",
+                "type": "devicemonitor",
+                "properties": {
+                    "logToDeviceKeys": [],
+                    "devices": {
+                        "device01": {
+                            "name": "Test 1-SIMPL Device",
+                            "warningTimeout": 60,
+                            "errorTimeout": 180,
+                            "monitorType": "Digital",
+                            "logToProcessor": true,
+                            "logToDevices": true,
+                            "joinNumber": 1
                         },
-                        {
-                            "name" : "Test 2",
-                            "joinNumber" : 2,
-                            "useInRoomHealth" : true,
-                            "warningTimeout" : 60,
-                            "errorTimeout" : 180,
-                            "monitorType" : "Serial"
+                        "device02": {
+                            "name": "Test 2-Essentials Device",
+                            "logToProcessor": true,
+                            "logToDevices": true,
+                            "joinNumber": 2
+                        },
+                        "device03": {
+                            "name": "Test 3-Essentials Device",
+                            "logToProcessor": true,
+                            "logToDevices": true,
+                            "joinNumber": 3
                         }
-                    ],
-                    "EssentialsDevices" : [
-                        {
-                           "deviceKey" : "StatusSign-1",
-                           "joinNumber" : 3,
-                           "UseInRoomHealth" : true 
-                        }
-                    ]
+                    }
                 }
-
             },
-         
             {
                 "key": "Primary-Bridge-1",
                 "uid": 4,
                 "name": "Primary Bridge 1",
                 "group": "api",
-                "type": "eiscApi",
+                "type": "eiscApiAdvanced",
                 "properties": {
                     "control": {
                         "tcpSshProperties": {
                             "address": "127.0.0.2",
                             "port": 0
                         },
-                        "ipid": "21",
+                        "ipid": "aa",
                         "method": "ipidTcp"
                     },
                     "devices": [
                         {
-                            "deviceKey" : "DevMon-1",
-                            "joinStart" : 1
+                            "deviceKey": "DevMon-1",
+                            "joinStart": 1
                         }
                     ]
                 }
             }
-        ]
+        ],
+        "info": {},
+        "rooms": [],
+        "tieLines": []
     }
 }
