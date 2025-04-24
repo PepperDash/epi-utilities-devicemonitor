@@ -161,7 +161,7 @@ namespace epi.utilities.deviceMonitor
 			if (count > 0)
 			{
 				status = Debug.ErrorLogLevel.Error;
-				tempErrorMessage = string.Format("Error! {1} offline.", status, deviceString);
+				tempErrorMessage = string.Format("Error! {0} offline.", deviceString);
 			}			
 			Debug.LogInformation(this, tempErrorMessage);
 
