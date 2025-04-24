@@ -1,0 +1,61 @@
+{
+    "system": {
+        "info": {}
+    },
+    "template": {
+        "devices": [
+            {
+                "key": "DevMon-1",
+                "name": "Device Monitor",
+                "group": "api",
+                "type": "devicemonitor",
+                "properties": {
+                    "logToDeviceKeys": [],
+                    "devices": {
+                        "device01": {
+                            "name": "Test 1-SIMPL Device",
+                            "warningTimeout": 60,
+                            "errorTimeout": 180,
+                            "logToProcessor": true,
+                            "logToDevices": true,
+                            "joinNumber": 1
+                        },
+                        "device02": {
+                            "name": "Test 2-Essentials Device",
+                            "deviceKey" : "display01",
+                            "logToProcessor": true,
+                            "logToDevices": true,
+                            "joinNumber": 2
+                        }
+                    }
+                }
+            },
+            {
+                "key": "Primary-Bridge-1",
+                "uid": 4,
+                "name": "Primary Bridge 1",
+                "group": "api",
+                "type": "eiscApiAdvanced",
+                "properties": {
+                    "control": {
+                        "tcpSshProperties": {
+                            "address": "127.0.0.2",
+                            "port": 0
+                        },
+                        "ipid": "aa",
+                        "method": "ipidTcp"
+                    },
+                    "devices": [
+                        {
+                            "deviceKey": "DevMon-1",
+                            "joinStart": 1
+                        }
+                    ]
+                }
+            }
+        ],
+        "info": {},
+        "rooms": [],
+        "tieLines": []
+    }
+}
