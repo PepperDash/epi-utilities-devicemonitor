@@ -12,7 +12,7 @@ using Crestron.SimplSharpPro.DeviceSupport;
 
 namespace epi.utilities.deviceMonitor
 {
-	public class DeviceMonitor : EssentialsBridgeableDevice
+	public class DeviceMonitor : EssentialsBridgeableDevice, IBridgeAdvanced
     {
         public event EventHandler<ErrorArgs> ErrorEvent;
         private readonly DeviceMonitorProperties _props;
