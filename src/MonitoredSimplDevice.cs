@@ -156,7 +156,7 @@ namespace epi.utilities.deviceMonitor
             }
             catch (Exception ex)
             {
-                Debug.LogInformation(this, "Exception - {0}", ex.Message);
+                Debug.LogInformation(this, "Exception - {0}", ex.ToString());
             }
         }
 
