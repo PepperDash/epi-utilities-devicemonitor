@@ -156,7 +156,7 @@ namespace epi.utilities.deviceMonitor
             }
             catch (Exception ex)
             {
-                Debug.LogVerbose(this, "Exception - {0}", ex.Message);
+                Debug.LogInformation(this, "Exception - {0}", ex.Message);
             }
         }
 
@@ -174,7 +174,7 @@ namespace epi.utilities.deviceMonitor
             }
             catch (Exception ex)
             {
-                Debug.LogVerbose(this, "Exception - {0}", ex.Message);
+                Debug.LogInformation(this, "Exception - {0}", ex.Message);
             }
 
         }
@@ -211,7 +211,7 @@ namespace epi.utilities.deviceMonitor
             {
                 ChangeStatus(DeviceStatus.Error);
             }
-            Debug.LogInformation(this, "{0} Timer Expired", Status == DeviceStatus.Warning ? "Warning" : "Error" );
+            Debug.LogVerbose(this, "{0} Timer Expired", Status == DeviceStatus.Warning ? "Warning" : "Error" );
         }
 
         private void ChangeStatus(DeviceStatus status)
@@ -232,7 +232,7 @@ namespace epi.utilities.deviceMonitor
             }
             catch (Exception ex)
             {
-                Debug.LogVerbose(this, "Exception - {0}", ex.Message);
+                Debug.LogInformation(this, "Exception - {0}", ex.Message);
             }
         }
 

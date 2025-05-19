@@ -28,7 +28,7 @@ namespace epi.utilities.deviceMonitor
         {
             _props = JsonConvert.DeserializeObject<DeviceMonitorProperties>(dc.Properties.ToString());
             _overrideDigitalOutput = _props.OverrideDigitalOutputToVisibility;
-            Debug.LogInformation(this, "Made it to Device Constructor");
+            Debug.LogVerbose(this, "Made it to Device Constructor");
 			DevicesWithLogs = new List<IKeyed>(); 
         }
 
@@ -40,14 +40,14 @@ namespace epi.utilities.deviceMonitor
 		public override bool CustomActivate()
         {
 			
-            Debug.LogInformation(this, "Creating DeviceMonitor Links");
+            Debug.LogVerbose(this, "Creating DeviceMonitor Links");
 			foreach (var item in _props.Devices)
 			{
 				try
 				{
 					if (item.Value.DeviceKey != null)
 					{
-						Debug.LogInformation(this, "Creating Essentials Device : {0}", item.Value.DeviceKey);
+						Debug.LogVerbose(this, "Creating Essentials Device : {0}", item.Value.DeviceKey);
 						var newDevice = DeviceManager.GetDeviceForKey(item.Value.DeviceKey) as Device;
 
 						if (newDevice == null)
@@ -59,24 +59,24 @@ namespace epi.utilities.deviceMonitor
 
 					    if (commMonitor != null)
                         {
-                            Debug.LogVerbose(this, "{0} is an iCommunicationMonitor", newDevice.Key);
+                            Debug.LogInformation(this, "{0} is an iCommunicationMonitor", newDevice.Key);
 
                             var monitoredDevice = new MonitoredEssentialsDevice(item.Value, commMonitor, item.Key);
-                            Debug.LogVerbose(this, "{0} has been built as a monitoredEssentialsDevice", commMonitor.CommunicationMonitor.Key);
+                            Debug.LogInformation(this, "{0} has been built as a monitoredEssentialsDevice", commMonitor.CommunicationMonitor.Key);
 
 					        MonitoredEssentialsDevices.Add(item.Key, monitoredDevice);
-                            Debug.LogVerbose(this, "{0} has been Added as a monitoredEssentialsDevice", commMonitor.CommunicationMonitor.Key);
+                            Debug.LogInformation(this, "{0} has been Added as a monitoredEssentialsDevice", commMonitor.CommunicationMonitor.Key);
                             monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
-                            Debug.LogVerbose(this, "{0} has been registered", commMonitor.CommunicationMonitor.Key);
+                            Debug.LogInformation(this, "{0} has been registered", commMonitor.CommunicationMonitor.Key);
                             continue;
 					    }
 					    var commBasic = newDevice as IBasicCommunication;
                         if (commBasic != null)
 					    {
-                            Debug.LogVerbose(this, "{0} is an iBasicCommunication", commBasic.Key);
+                            Debug.LogInformation(this, "{0} is an iBasicCommunication", commBasic.Key);
 					        if (item.Value.CommunicationMonitor == null)
 					        {
-					            Debug.LogVerbose(this, "No Valid CommunicationMonitor for {0}", commBasic.Key);
+					            Debug.LogError(this, "No Valid CommunicationMonitor for {0}", commBasic.Key);
 					            continue;
 					        }
 
@@ -84,13 +84,13 @@ namespace epi.utilities.deviceMonitor
 					            item.Value.CommunicationMonitor);
                             if (newDeviceMonitor == null)
                             {
-                                Debug.LogVerbose(this, "Failed to build CommunicationMonitor for {0}", commBasic.Key);
+                                Debug.LogError(this, "Failed to build CommunicationMonitor for {0}", commBasic.Key);
                                 continue;
                             }                       
                             var monitoredDevice = new MonitoredEssentialsDevice(item.Value, new OnDemandCommunicationMonitorDevice(newDeviceMonitor), item.Key);
 					        if (monitoredDevice == null)
 					        {
-                                Debug.LogVerbose(this, "Failed to build OnDemandCommunicationMonitorDevice for {0}", newDeviceMonitor.Key);
+                                Debug.LogError(this, "Failed to build OnDemandCommunicationMonitorDevice for {0}", newDeviceMonitor.Key);
                                 continue;
 
 					        }
@@ -98,11 +98,11 @@ namespace epi.utilities.deviceMonitor
 					        monitoredDevice.StatusMonitor.StatusChange += StatusMonitor_StatusChange;
 					        continue;
 					    }
-						Debug.LogVerbose(this, "DeviceMonitor -- Device {0} Does not support ICommunicationMonitor", item.Value.DeviceKey);
+						Debug.LogError(this, "DeviceMonitor -- Device {0} Does not support ICommunicationMonitor", item.Value.DeviceKey);
                     }
 					else
 					{
-						Debug.LogInformation(this, "Creating Simpl Device : {0}", item.Value.Name);
+						Debug.LogVerbose(this, "Creating Simpl Device : {0}", item.Value.Name);
 						var monitoredDevice = new MonitoredSimplDevice(item.Value);
 						MonitoredSimplDevices.Add(item.Key, monitoredDevice);
 						monitoredDevice.StatusChangeEvent += StatusMonitor_StatusChange;
@@ -118,10 +118,10 @@ namespace epi.utilities.deviceMonitor
 		    {
 		        foreach (var key in _props.LogToDeviceKeys)
 		        {
-		            Debug.LogInformation(this, "Looking For Device with Log: {0}", key);
+		            Debug.LogVerbose(this, "Looking For Device with Log: {0}", key);
 		            var device = DeviceManager.GetDeviceForKey(key);
 		            if (device == null) continue;
-		            Debug.LogInformation(this, "Found Device: {0}", key);
+		            Debug.LogVerbose(this, "Found Device: {0}", key);
 		            DevicesWithLogs.Add(device);
 		        }
 		    }
@@ -163,7 +163,7 @@ namespace epi.utilities.deviceMonitor
 				status = Debug.ErrorLogLevel.Error;
 				tempErrorMessage = string.Format("Error! {0} offline.", deviceString);
 			}			
-			Debug.LogInformation(this, tempErrorMessage);
+			Debug.LogVerbose(this, tempErrorMessage);
 
             if (DevicesWithLogs.Count > 0)
 			{
@@ -193,7 +193,7 @@ namespace epi.utilities.deviceMonitor
             bridge.AddJoinMap(Key, joinMap);
 
 			Debug.LogDebug("Linking to Trilist '{0}'", trilist.ID.ToString("X"));
-			Debug.LogVerbose("Linking to DeviceMonitor: {0}", Name);
+			Debug.LogInformation("Linking to DeviceMonitor: {0}", Name);
 			
             foreach (var item in MonitoredSimplDevices)
             {
@@ -205,16 +205,16 @@ namespace epi.utilities.deviceMonitor
 
                 if (!joinMap.Joins.TryGetValue(String.Format("DeviceMonitor--{0}", key), out joinData))
                 {
-                    Debug.LogVerbose(this, "could not get joinmap data for {0}", device.Key);
+                    Debug.LogError(this, "could not get joinmap data for {0}", device.Key);
                     continue;
                 }
                 if (!joinData.Metadata.Description.EndsWith(":: SIMPL"))
                 {
-                    Debug.LogVerbose(this, "join data did not end with :: SIMPL ", joinData.Metadata.Description);
+                    Debug.LogError(this, "join data did not end with :: SIMPL ", joinData.Metadata.Description);
                     continue;
                 }
 
-                Debug.LogVerbose(this, "Linking Bridge to Simpl Device : {0} join: {1}", device.Name, joinData.JoinNumber);
+                Debug.LogInformation(this, "Linking Bridge to Simpl Device : {0} join: {1}", device.Name, joinData.JoinNumber);
                 trilist.SetStringSigAction(joinData.JoinNumber, s => device.StopTimerSerial());
 
                 trilist.SetBoolSigAction(joinData.JoinNumber, device.DeviceOnline);
@@ -239,7 +239,7 @@ namespace epi.utilities.deviceMonitor
                 if (!joinData.Metadata.Description.EndsWith(":: ESSENTIALS"))
                     continue;
 
-                Debug.LogInformation(this, "Linking Bridge to Essentials Device : {0} join: {1}", item.Name, joinData.JoinNumber);
+                Debug.LogVerbose(this, "Linking Bridge to Essentials Device : {0} join: {1}", item.Name, joinData.JoinNumber);
 
                 device.StatusMonitor.IsOnlineFeedback.LinkInputSig(trilist.BooleanInput[joinData.JoinNumber]);
                 device.StatusFeedback.LinkInputSig(trilist.UShortInput[joinData.JoinNumber]);

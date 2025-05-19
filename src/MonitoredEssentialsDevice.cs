@@ -57,7 +57,7 @@ namespace epi.utilities.deviceMonitor
 
         public MonitoredEssentialsDevice(DeviceMonitorDevice deviceConfig, ICommunicationMonitor newStatusMonitorBase, string key)
         {
-            Debug.LogVerbose("{0} Entered Constructor", deviceConfig.DeviceKey);
+            Debug.LogInformation("{0} Entered Constructor", deviceConfig.DeviceKey);
             Key = key;
             NameFeedback = new StringFeedback(() => Name);
             StatusFeedback = new IntFeedback(() => (int)Status);
@@ -66,7 +66,7 @@ namespace epi.utilities.deviceMonitor
             JoinNumber = deviceConfig.JoinNumber;
             UseInRoomHealth = deviceConfig.LogToDevices;
             StatusMonitor.StatusChange += StatusMonitor_StatusChange;
-            Debug.LogVerbose("{0} Exited Constructor", deviceConfig.DeviceKey);
+            Debug.LogInformation("{0} Exited Constructor", deviceConfig.DeviceKey);
 
             TranslateStatus(newStatusMonitorBase.CommunicationMonitor.Status);
         }
