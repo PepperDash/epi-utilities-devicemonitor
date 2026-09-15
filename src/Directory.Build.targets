@@ -9,7 +9,7 @@
       <PackagePath>content;</PackagePath>
     </None>
   </ItemGroup>
-  <Target Name="Create CPLZ" AfterTargets="Build; Rebuild" Condition="$(ProjectType) == 'ProgramLibrary'">
+  <Target Name="Create CPLZ" AfterTargets="Build; Rebuild" BeforeTargets="GenerateNuspec" Condition="$(ProjectType) == 'ProgramLibrary'">
     <Message Text="Creating CPLZ"></Message>
     <MakeDir Directories="$(PackageOutputPath)" Condition="!Exists($(PackageOutputPath))"></MakeDir>
     <ZipDirectory SourceDirectory="$(TargetDir)" DestinationFile="$(PackageOutputPath)\$(TargetName).$(Version).cplz" Overwrite="true"/>    

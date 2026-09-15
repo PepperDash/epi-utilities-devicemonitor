@@ -4,13 +4,12 @@ using System.Linq;
 using Crestron.SimplSharp;
 using PepperDash.Core;
 using PepperDash.Essentials.Core;
-using PepperDash.Essentials.Core.Interfaces;
 using PepperDash.Essentials.Core.Bridges;
 using Newtonsoft.Json;
 using PepperDash.Essentials.Core.Config;
 using Crestron.SimplSharpPro.DeviceSupport;
 
-namespace epi.utilities.deviceMonitor
+namespace PepperDash.Essentials.Plugins
 {
 	public class DeviceMonitor : EssentialsBridgeableDevice
     {
@@ -37,7 +36,7 @@ namespace epi.utilities.deviceMonitor
             MakeDeviceErrorString();
         }
 
-		public override bool CustomActivate()
+		protected override bool CustomActivate()
         {
 			
             Debug.LogInformation(this, "Creating DeviceMonitor Links");
@@ -146,7 +145,6 @@ namespace epi.utilities.deviceMonitor
 		{
 			var count = 0;
 			var deviceString = "Room OK";
-			var status = Debug.ErrorLogLevel.None;
 			foreach (var item in MonitoredSimplDevices.Values.Where(item => item.UseInRoomHealth && item.Status == DeviceStatus.Error))
 			{
                 deviceString = count == 0 ? item.Name : string.Format(", {0}", item.Name);
@@ -160,18 +158,9 @@ namespace epi.utilities.deviceMonitor
 		    var tempErrorMessage = "Room OK";
 			if (count > 0)
 			{
-				status = Debug.ErrorLogLevel.Error;
 				tempErrorMessage = string.Format("Error! {0} offline.", deviceString);
 			}			
 			Debug.LogInformation(this, tempErrorMessage);
-
-            if (DevicesWithLogs.Count > 0)
-			{
-				foreach (var logCapableDevice in DevicesWithLogs.OfType<ILogStringsWithLevel>())
-				{
-				    logCapableDevice.SendToLog(this, status, tempErrorMessage);
-				}
-			}
 
 			var handler = ErrorEvent;
 			if (handler != null)

@@ -1,7 +1,7 @@
-﻿using PepperDash.Core;
+using PepperDash.Core;
 using PepperDash.Essentials.Core;
 
-namespace epi.utilities.deviceMonitor
+namespace PepperDash.Essentials.Plugins
 {
     public class MonitoredEssentialsDevice : IKeyed
     {

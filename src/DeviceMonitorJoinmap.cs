@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using PepperDash.Essentials.Core;
 
-namespace epi.utilities.deviceMonitor
+namespace PepperDash.Essentials.Plugins
 {
     public class DeviceMonitorJoinMapAdvanced : JoinMapBaseAdvanced
     {
