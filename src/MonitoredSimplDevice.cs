@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Crestron.SimplSharp;
 using PepperDash.Essentials.Core;
 using PepperDash.Core;
 
-namespace epi.utilities.deviceMonitor
+namespace PepperDash.Essentials.Plugins
 {
     public class MonitoredSimplDevice : IKeyed
     {		

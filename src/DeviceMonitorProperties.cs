@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using PepperDash.Essentials.Core;
 
-namespace epi.utilities.deviceMonitor
+namespace PepperDash.Essentials.Plugins
 {
     public class DeviceMonitorProperties
     {
